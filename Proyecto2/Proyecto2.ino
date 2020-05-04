@@ -73,11 +73,13 @@ int DERECHA_BUB = 0;
 int IZQUIERDA_BUB = 0;
 int SALTANDO_BUB = 0;
 int BAJANDO_BUB = 0;
+int BURBUJA_BUB = 0;
 //****************************** BOB***********************************
 int DERECHA_BOB = 0;
 int IZQUIERDA_BOB = 0;
 int SALTANDO_BOB = 0;
 int BAJANDO_BOB = 0;
+int BURBUJA_BOB = 0;
 //***************************************************************************************************************************************
 // DEFINIENDO POSICIONES
 //***************************************************************************************************************************************
@@ -136,7 +138,6 @@ extern uint8_t MANZANA[];
 //***************************************************************************************************************************************
 // Inicialización
 //***************************************************************************************************************************************
-
 void setup() {
   SysCtlClockSet(SYSCTL_SYSDIV_2_5 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN | SYSCTL_XTAL_16MHZ);
   Serial.begin(9600);
@@ -150,10 +151,14 @@ void setup() {
   pinMode(buttonPin2, INPUT_PULLUP);
   pinMode(buttonPin3, INPUT_PULLUP);
   pinMode(buttonPin4, INPUT_PULLUP);
+  pinMode(buttonPin5, INPUT_PULLUP);
+  pinMode(buttonPin6, INPUT_PULLUP);
+  pinMode(buttonPin7, INPUT_PULLUP);
+  pinMode(buttonPin8, INPUT_PULLUP);
+  pinMode(buttonPin9, INPUT_PULLUP);
+  pinMode(buttonPin10, INPUT_PULLUP);
   //FillRect(0, 0, 319, 206, 0x421b);
-
   //LCD_Sprite(int x, int y, int width, int height, unsigned char bitmap[],int columns, int index, char flip, char offset);
-
 }
 //***************************************************************************************************************************************
 // Loop Infinito
@@ -185,14 +190,19 @@ void loop() {
     }
   }
 }
-
 //******************************************************************************************************************************************
 void JUEGO(void) {
-
   DERECHA_BUB = digitalRead(buttonPin1);
   IZQUIERDA_BUB = digitalRead(buttonPin2);
   SALTANDO_BUB = digitalRead(buttonPin3);
   BAJANDO_BUB = digitalRead(buttonPin4);
+  BURBUJA_BUB = digitalRead(buttonPin5);
+  DERECHA_BOB = digitalRead(buttonPin6);
+  IZQUIERDA_BOB = digitalRead(buttonPin7);
+  SALTANDO_BOB = digitalRead(buttonPin8);
+  BAJANDO_BOB = digitalRead(buttonPin9);
+  BURBUJA_BOB = digitalRead(buttonPin10);
+  //***************************************************************************************************************************************
   LCD_Print(text1, 25, 3, 2, 0xbfc3, 0x0000);
   LCD_Print(text3, 65, 5, 1, 0xffff, 0x0000);
   LCD_Print(text2, 220, 3, 2, 0x4e7b, 0x0000);
@@ -267,6 +277,8 @@ void JUEGO(void) {
   LCD_Sprite(x1, y, 18, 18, BUB, 4, anim3, PBUB, 0);
 
   //******************************************************************************************************************************************
+   // BENZON (VILLANOS)
+  //***************************************************************************************************************************************
   if (x == 180 ) {
     A = 0;
   }
