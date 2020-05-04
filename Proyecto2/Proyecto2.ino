@@ -88,6 +88,7 @@ int BURBUJA_BOB = 0;
 //***************************************************************************************************************************************
 //****************************** BUB***********************************
 int PBUB = 0;
+int R=4;
 int y = 190;
 int x1 = 18;
 //****************************** BOB***********************************
@@ -164,6 +165,15 @@ extern uint8_t CHERRY[];
 extern uint8_t PINA[];
 extern uint8_t PERA[];
 extern uint8_t MANZANA[];
+//***************************************************************************************************************************************
+// GRAFICOS
+//***************************************************************************************************************************************
+unsigned char* BBUB =BUB;
+unsigned char* BBOB =BOB;
+unsigned char* BBENZO =BENZO;
+unsigned char* BMANZANA =MANZANA;
+
+//extern uint8_t BBUB1 [] = {BUB[],BUB_SALTANDO[],BUB_BAJANDO[]};
 //***************************************************************************************************************************************
 // Inicialización
 //***************************************************************************************************************************************
@@ -267,48 +277,58 @@ void JUEGO(void) {
   LCD_Bitmap(x22, y22, 13, 17, PINA);
   LCD_Bitmap(x23, y23, 13, 17, PERA);
   //  LCD_Bitmap(x24, y24, 13, 17, MANZANA);
-  //******************************************************************************************************************************************
-  if (DERECHA_BUB == HIGH && IZQUIERDA_BUB == LOW) {
+  //**********************************************************  BUB  ********************************************************************************
+  if (DERECHA_BUB == HIGH && IZQUIERDA_BUB == LOW && x1 <278) {
     Estado1 = 1;
   }
   if (Estado1 == 1 &&  DERECHA_BUB == LOW && IZQUIERDA_BUB == LOW && SALTANDO_BUB == LOW &&  BAJANDO_BUB == LOW)  { //cuando el pulsador se suelta se
     Estado1 = 0;
     x1 = x1 + 10;
+    R =4;
+    BBUB = BUB;
     FillRect(x1 - 10, y, 10, 18, 0x0000);
     PBUB = 0;
   }
 
-  if (IZQUIERDA_BUB == HIGH &&  DERECHA_BUB == LOW ) {
+  if (IZQUIERDA_BUB == HIGH &&  DERECHA_BUB == LOW && x1 >18 ) {
     Estado2 = 1;
   }
   if (Estado2 == 1 && IZQUIERDA_BUB == LOW &&  DERECHA_BUB == LOW && SALTANDO_BUB == LOW &&  BAJANDO_BUB == LOW) { //cuando el pulsador se suelta se
     Estado2 = 0;
     x1 = x1 - 10;
+    R =4;
+    BBUB = BUB;
     FillRect(x1 + 10, y, 18, 18, 0x0000);
     PBUB = 1;
   }
-  if (SALTANDO_BUB == HIGH && BAJANDO_BUB == LOW) {
+  if (SALTANDO_BUB == HIGH && BAJANDO_BUB == LOW && y >40) {
     Estado3 = 1;
   }
   if (Estado3 == 1 &&  SALTANDO_BUB == LOW &&  BAJANDO_BUB == LOW &&  DERECHA_BUB == LOW && IZQUIERDA_BUB == LOW)  { //cuando el pulsador se suelta se
     Estado3 = 0;
     y = y - 30 ;
+    R =2;
+    BBUB = BUB_SALTANDO;
     FillRect(x1 - 10, y + 30, 26, 18, 0x0000);
   }
-  if (BAJANDO_BUB == HIGH && SALTANDO_BUB == LOW) {
+  if (BAJANDO_BUB == HIGH && SALTANDO_BUB == LOW && y<190) {
     Estado4 = 1;
   }
   if (Estado4 == 1 &&  SALTANDO_BUB == LOW &&  BAJANDO_BUB == LOW &&  DERECHA_BUB == LOW && IZQUIERDA_BUB == LOW)  { //cuando el pulsador se suelta se
     Estado4 = 0;
     y = y + 30 ;
+    R =2;
+    BBUB = BUB_BAJANDO;
     FillRect(x1 - 10, y - 30, 26, 18, 0x0000);
   }
   if (( (((x1<(x10-10))||((x1>118)&&(x1<(x11-10)))||(x1>248))&&(y==160)) ||  (((x1<(x10-10))||((x1>118)&&(x1<(x11-10)))||(x1>248))&&(y==100)) || (((x1<(x10-10))||((x1>118)&&(x1<(x11-10)))||(x1>248))&&(y==40)) ||  (((x1<(x12-10))||(x1>183))&&(y==130)) || (((x1<(x12-10))||(x1>183))&&(y==70)) ) && (y<190)  )  { //cuando el pensonaje no este sobre ninguna base
     y = y + 30 ;
+    R = 2;
+    BBUB = BUB_BAJANDO;
     FillRect(x1 - 10, y - 30, 26, 18, 0x0000);
   }
   int anim3 = (x1 / 11) % 2;
-  LCD_Sprite(x1, y, 18, 18, BUB, 4, anim3, PBUB, 0);
+  LCD_Sprite(x1, y, 18, 18, BBUB, R, anim3, PBUB, 0);
 //||((y!=y10)&&(x1!=x10)) ||(y!=y12) || (y!=y13) ||(y!=y14) ||(y!=y15) ||(y!=y16) ||(y!=y17)
 
   //******************************************************************************************************************************************
