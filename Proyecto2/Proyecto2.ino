@@ -253,12 +253,12 @@ void JUEGO(void) {
   LCD_Bitmap(115, y15, 80, 8, PLATAFORMA_LARGO);
   LCD_Bitmap(50, y16, 80, 8, PLATAFORMA_LARGO);
   LCD_Bitmap(180, y17, 80, 8, PLATAFORMA_LARGO);
-  
+
   LCD_Bitmap(x20, y20, 13, 17, CHERRY);
   LCD_Bitmap(x21, y21, 13, 17, CHERRY);
   LCD_Bitmap(x22, y22, 13, 17, PINA);
   LCD_Bitmap(x23, y23, 13, 17, PERA);
-//  LCD_Bitmap(x24, y24, 13, 17, MANZANA);
+  //  LCD_Bitmap(x24, y24, 13, 17, MANZANA);
   //******************************************************************************************************************************************
   if (DERECHA_BUB == HIGH && IZQUIERDA_BUB == LOW) {
     Estado1 = 1;
@@ -295,11 +295,15 @@ void JUEGO(void) {
     y = y + 30 ;
     FillRect(x1 - 10, y - 30, 26, 18, 0x0000);
   }
+  if ( (y!=y10) ||(y!=y11) ||(y!=y12) || (y!=y13) ||(y!=y14) ||(y!=y15) ||(y!=y16) ||(y!=y17) ||(y!=190) )  { //cuando el pensonaje no este sobre ninguna base
+    y = y + 30 ;
+    FillRect(x1 - 10, y - 30, 26, 18, 0x0000);
+  }
   int anim3 = (x1 / 11) % 2;
   LCD_Sprite(x1, y, 18, 18, BUB, 4, anim3, PBUB, 0);
 
   //******************************************************************************************************************************************
-   // BENZON (VILLANOS)
+  // BENZON (VILLANOS)
   //***************************************************************************************************************************************
   if (x == 180 ) {
     A = 0;
