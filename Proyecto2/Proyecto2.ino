@@ -99,6 +99,14 @@ int x = 180;
 int x3 = 245;
 int A = 0;
 //****************************** BASES ***********************************
+int x10 = 50;
+int x11 = 180;
+int x12 = 115;
+int x13 = 50;
+int x14 = 180;
+int x15 = 115;
+int x16 = 50;
+int x17 = 180;
 int y10 = 180;
 int y11 = 180;
 int y12 = 150;
@@ -245,14 +253,14 @@ void JUEGO(void) {
   LCD_Bitmap(176, 208, 80, 8, PLATAFORMA_LARGO);
   LCD_Bitmap(223, 208, 80, 8, PLATAFORMA_LARGO);
 
-  LCD_Bitmap(50, y10, 80, 8, PLATAFORMA_LARGO);
-  LCD_Bitmap(180, y11, 80, 8, PLATAFORMA_LARGO);
-  LCD_Bitmap(115, y12, 80, 8, PLATAFORMA_LARGO);
-  LCD_Bitmap(50, y13, 80, 8, PLATAFORMA_LARGO);
-  LCD_Bitmap(180, y14, 80, 8, PLATAFORMA_LARGO);
-  LCD_Bitmap(115, y15, 80, 8, PLATAFORMA_LARGO);
-  LCD_Bitmap(50, y16, 80, 8, PLATAFORMA_LARGO);
-  LCD_Bitmap(180, y17, 80, 8, PLATAFORMA_LARGO);
+  LCD_Bitmap(x10, y10, 80, 8, PLATAFORMA_LARGO);
+  LCD_Bitmap(x11, y11, 80, 8, PLATAFORMA_LARGO);
+  LCD_Bitmap(x12, y12, 80, 8, PLATAFORMA_LARGO);
+  LCD_Bitmap(x13, y13, 80, 8, PLATAFORMA_LARGO);
+  LCD_Bitmap(x14, y14, 80, 8, PLATAFORMA_LARGO);
+  LCD_Bitmap(x15, y15, 80, 8, PLATAFORMA_LARGO);
+  LCD_Bitmap(x16, y16, 80, 8, PLATAFORMA_LARGO);
+  LCD_Bitmap(x17, y17, 80, 8, PLATAFORMA_LARGO);
 
   LCD_Bitmap(x20, y20, 13, 17, CHERRY);
   LCD_Bitmap(x21, y21, 13, 17, CHERRY);
@@ -295,12 +303,13 @@ void JUEGO(void) {
     y = y + 30 ;
     FillRect(x1 - 10, y - 30, 26, 18, 0x0000);
   }
-  if ( (y!=y10) ||(y!=y11) ||(y!=y12) || (y!=y13) ||(y!=y14) ||(y!=y15) ||(y!=y16) ||(y!=y17) ||(y!=190) )  { //cuando el pensonaje no este sobre ninguna base
+  if (( (((x1<(x10-10))||((x1>118)&&(x1<(x11-10)))||(x1>248))&&(y==160)) ||  (((x1<(x10-10))||((x1>118)&&(x1<(x11-10)))||(x1>248))&&(y==100)) || (((x1<(x10-10))||((x1>118)&&(x1<(x11-10)))||(x1>248))&&(y==40)) ||  (((x1<(x12-10))||(x1>183))&&(y==130)) || (((x1<(x12-10))||(x1>183))&&(y==70)) ) && (y<190)  )  { //cuando el pensonaje no este sobre ninguna base
     y = y + 30 ;
     FillRect(x1 - 10, y - 30, 26, 18, 0x0000);
   }
   int anim3 = (x1 / 11) % 2;
   LCD_Sprite(x1, y, 18, 18, BUB, 4, anim3, PBUB, 0);
+//||((y!=y10)&&(x1!=x10)) ||(y!=y12) || (y!=y13) ||(y!=y14) ||(y!=y15) ||(y!=y16) ||(y!=y17)
 
   //******************************************************************************************************************************************
   // BENZON (VILLANOS)
