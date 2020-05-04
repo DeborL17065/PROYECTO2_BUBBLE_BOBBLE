@@ -50,17 +50,37 @@ void LCD_Print(String text, int x, int y, int fontSize, int color, int backgroun
 void LCD_Bitmap(unsigned int x, unsigned int y, unsigned int width, unsigned int height, unsigned char bitmap[]);
 void LCD_Sprite(int x, int y, int width, int height, unsigned char bitmap[], int columns, int index, char flip, char offset);
 
-
+//***************************************************************************************************************************************
+// DEFINIENDO BOTONES
+//***************************************************************************************************************************************
 const int buttonPin = PUSH2;     // the number of the pushbutton pin
 int buttonState = 0;
+//****************************** BUB***********************************
 const int buttonPin1 = PA_7;     // the number of the pushbutton pin
 const int buttonPin2 = PF_1;     // the number of the pushbutton pin
 const int buttonPin3 = PE_2;     // the number of the pushbutton pin
 const int buttonPin4 = PE_3;     // the number of the pushbutton pin
+const int buttonPin5 = PA_6;     // the number of the pushbutton pin
+//****************************** BOB***********************************
+const int buttonPin6 = PA_7;     // the number of the pushbutton pin
+const int buttonPin7 = PF_1;     // the number of the pushbutton pin
+const int buttonPin8 = PE_2;     // the number of the pushbutton pin
+const int buttonPin9 = PE_3;     // the number of the pushbutton pin
+const int buttonPin10 = PA_6;     // the number of the pushbutton pin
+//****************************** BUB***********************************
 int DERECHA_BUB = 0;
 int IZQUIERDA_BUB = 0;
 int SALTANDO_BUB = 0;
 int BAJANDO_BUB = 0;
+//****************************** BOB***********************************
+int DERECHA_BOB = 0;
+int IZQUIERDA_BOB = 0;
+int SALTANDO_BOB = 0;
+int BAJANDO_BOB = 0;
+//***************************************************************************************************************************************
+// DEFINIENDO POSICIONES
+//***************************************************************************************************************************************
+//****************************** BUB***********************************
 int c = 0;
 int PBUB = 0;
 int x1 = 18;
@@ -69,6 +89,10 @@ int x = 180;
 int x3 = 245;
 int y = 190;
 int y2 = 190;
+
+//***************************************************************************************************************************************
+// TABLERO DE POSICIONES
+//***************************************************************************************************************************************
 String text1 = "P1";
 String text3 = "0000";
 String text2 = "P2";
