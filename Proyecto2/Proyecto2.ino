@@ -6,7 +6,7 @@
    IE3027: Electrónica Digital 2 - 2019
 */
 //***************************************************************************************************************************************
-
+//AUTOR PROYECTO : DEBORA LÓPEZ, CARNÉ - 17065
 #include <stdint.h>
 #include <stdbool.h>
 //#include <lcd_registers.h>
