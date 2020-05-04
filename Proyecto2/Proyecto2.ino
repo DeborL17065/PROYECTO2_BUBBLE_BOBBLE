@@ -6,7 +6,10 @@
    IE3027: Electrónica Digital 2 - 2019
 */
 //***************************************************************************************************************************************
-//AUTOR PROYECTO : DEBORA LÓPEZ, CARNÉ - 17065
+/*
+    AUTOR DEL PROYECTO : DEBORA LÓPEZ, CARNÉ - 17065
+*/
+//***************************************************************************************************************************************
 #include <stdint.h>
 #include <stdbool.h>
 //#include <lcd_registers.h>
@@ -96,23 +99,23 @@ int x = 180;
 int x3 = 245;
 int A = 0;
 //****************************** BASES ***********************************
-int y10 = 190;
-int y11 = 190;
-int y12 = 190;
-int y13 = 190;
-int y14= 190;
-int y15 = 190;
-int y16 = 190;
-int y17 = 190;
+int y10 = 180;
+int y11 = 180;
+int y12 = 150;
+int y13 = 120;
+int y14 = 120;
+int y15 = 90;
+int y16 = 60;
+int y17 = 60;
 //****************************** FRUTAS ***********************************
-int y20 = 190;
+int y20 = 72;
 int y21 = 190;
-int y22 = 190;
-int y23 = 190;
-int x20 = 190;
-int x21 = 190;
-int x22 = 190;
-int x23 = 190;
+int y22 = 162;
+int y23 = 102;
+int x20 = 135;
+int x21 = 135;
+int x22 = 80;
+int x23 = 195;
 //***************************************************************************************************************************************
 // TABLERO DE PUNTOS
 //***************************************************************************************************************************************
@@ -242,25 +245,25 @@ void JUEGO(void) {
   LCD_Bitmap(176, 208, 80, 8, PLATAFORMA_LARGO);
   LCD_Bitmap(223, 208, 80, 8, PLATAFORMA_LARGO);
 
-  LCD_Bitmap(50, 180, 80, 8, PLATAFORMA_LARGO);
-  LCD_Bitmap(180, 180, 80, 8, PLATAFORMA_LARGO);
-  LCD_Bitmap(115, 150, 80, 8, PLATAFORMA_LARGO);
-  LCD_Bitmap(50, 120, 80, 8, PLATAFORMA_LARGO);
-  LCD_Bitmap(180, 120, 80, 8, PLATAFORMA_LARGO);
-  LCD_Bitmap(115, 90, 80, 8, PLATAFORMA_LARGO);
-  LCD_Bitmap(50, 60, 80, 8, PLATAFORMA_LARGO);
-  LCD_Bitmap(180, 60, 80, 8, PLATAFORMA_LARGO);
+  LCD_Bitmap(50, y10, 80, 8, PLATAFORMA_LARGO);
+  LCD_Bitmap(180, y11, 80, 8, PLATAFORMA_LARGO);
+  LCD_Bitmap(115, y12, 80, 8, PLATAFORMA_LARGO);
+  LCD_Bitmap(50, y13, 80, 8, PLATAFORMA_LARGO);
+  LCD_Bitmap(180, y14, 80, 8, PLATAFORMA_LARGO);
+  LCD_Bitmap(115, y15, 80, 8, PLATAFORMA_LARGO);
+  LCD_Bitmap(50, y16, 80, 8, PLATAFORMA_LARGO);
+  LCD_Bitmap(180, y17, 80, 8, PLATAFORMA_LARGO);
   
-  LCD_Bitmap(135, 72, 13, 17, CHERRY);
-  LCD_Bitmap(135, 190, 13, 17, CHERRY);
-  LCD_Bitmap(80, 162, 13, 17, PINA);
-  LCD_Bitmap(195, 102, 13, 17, PERA);
-  LCD_Bitmap(80, 42, 13, 17, MANZANA);
+  LCD_Bitmap(x20, y20, 13, 17, CHERRY);
+  LCD_Bitmap(x21, y21, 13, 17, CHERRY);
+  LCD_Bitmap(x22, y22, 13, 17, PINA);
+  LCD_Bitmap(x23, y23, 13, 17, PERA);
+//  LCD_Bitmap(x24, y24, 13, 17, MANZANA);
   //******************************************************************************************************************************************
   if (DERECHA_BUB == HIGH && IZQUIERDA_BUB == LOW) {
     Estado1 = 1;
   }
-  if (Estado1 == 1 &&  DERECHA_BUB == LOW && IZQUIERDA_BUB == LOW)  { //cuando el pulsador se suelta se
+  if (Estado1 == 1 &&  DERECHA_BUB == LOW && IZQUIERDA_BUB == LOW && SALTANDO_BUB == LOW &&  BAJANDO_BUB == LOW)  { //cuando el pulsador se suelta se
     Estado1 = 0;
     x1 = x1 + 10;
     FillRect(x1 - 10, y, 10, 18, 0x0000);
@@ -270,7 +273,7 @@ void JUEGO(void) {
   if (IZQUIERDA_BUB == HIGH &&  DERECHA_BUB == LOW ) {
     Estado2 = 1;
   }
-  if (Estado2 == 1 && IZQUIERDA_BUB == LOW &&  DERECHA_BUB == LOW) { //cuando el pulsador se suelta se
+  if (Estado2 == 1 && IZQUIERDA_BUB == LOW &&  DERECHA_BUB == LOW && SALTANDO_BUB == LOW &&  BAJANDO_BUB == LOW) { //cuando el pulsador se suelta se
     Estado2 = 0;
     x1 = x1 - 10;
     FillRect(x1 + 10, y, 18, 18, 0x0000);
@@ -279,7 +282,7 @@ void JUEGO(void) {
   if (SALTANDO_BUB == HIGH && BAJANDO_BUB == LOW) {
     Estado3 = 1;
   }
-  if (Estado3 == 1 &&  SALTANDO_BUB == LOW &&  BAJANDO_BUB == LOW)  { //cuando el pulsador se suelta se
+  if (Estado3 == 1 &&  SALTANDO_BUB == LOW &&  BAJANDO_BUB == LOW &&  DERECHA_BUB == LOW && IZQUIERDA_BUB == LOW)  { //cuando el pulsador se suelta se
     Estado3 = 0;
     y = y - 30 ;
     FillRect(x1 - 10, y + 30, 26, 18, 0x0000);
@@ -287,7 +290,7 @@ void JUEGO(void) {
   if (BAJANDO_BUB == HIGH && SALTANDO_BUB == LOW) {
     Estado4 = 1;
   }
-  if (Estado4 == 1 &&  SALTANDO_BUB == LOW &&  BAJANDO_BUB == LOW)  { //cuando el pulsador se suelta se
+  if (Estado4 == 1 &&  SALTANDO_BUB == LOW &&  BAJANDO_BUB == LOW &&  DERECHA_BUB == LOW && IZQUIERDA_BUB == LOW)  { //cuando el pulsador se suelta se
     Estado4 = 0;
     y = y + 30 ;
     FillRect(x1 - 10, y - 30, 26, 18, 0x0000);
