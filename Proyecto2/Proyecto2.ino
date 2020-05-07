@@ -56,7 +56,7 @@ void LCD_Sprite(int x, int y, int width, int height, unsigned char bitmap[], int
 //***************************************************************************************************************************************
 // DEFINIENDO BOTONES
 //***************************************************************************************************************************************
-const int buttonPin = PUSH2;     // the number of the pushbutton pin
+const int buttonPin = PC_4;     // the number of the pushbutton pin
 int buttonState = 0;
 int c = 0;
 //****************************** BUB***********************************
@@ -66,11 +66,11 @@ const int buttonPin3 = PE_2;     // the number of the pushbutton pin
 const int buttonPin4 = PE_3;     // the number of the pushbutton pin
 const int buttonPin5 = PA_6;     // the number of the pushbutton pin
 //****************************** BOB***********************************
-const int buttonPin6 = PA_7;     // the number of the pushbutton pin
-const int buttonPin7 = PF_1;     // the number of the pushbutton pin
-const int buttonPin8 = PE_2;     // the number of the pushbutton pin
-const int buttonPin9 = PE_3;     // the number of the pushbutton pin
-const int buttonPin10 = PA_6;     // the number of the pushbutton pin
+const int buttonPin6 = PC_5;     // the number of the pushbutton pin
+const int buttonPin7 = PD_7;     // the number of the pushbutton pin
+const int buttonPin8 = PC_7;     // the number of the pushbutton pin
+const int buttonPin9 = PD_6;     // the number of the pushbutton pin
+const int buttonPin10 = PC_6;     // the number of the pushbutton pin
 //****************************** BUB***********************************
 int DERECHA_BUB = 0;
 int IZQUIERDA_BUB = 0;
@@ -88,17 +88,35 @@ int BURBUJA_BOB = 0;
 //***************************************************************************************************************************************
 //****************************** BUB***********************************
 int PBUB = 0;
-int R=4;
+int R = 4;
 int y = 190;
 int x1 = 18;
+int U = 0;
+int XBU = 1;
+int YBU = 0;
 //****************************** BOB***********************************
 int x2 = 18;
 int y2 = 190;
 int PBUB1 = 0;
-//****************************** BENZON ***********************************
-int x = 180;
-int x3 = 245;
-int A = 0;
+//****************************** BENZON **********************************
+int RBEN = 2;
+int XBEN = 15;
+int RBEN1 = 2;
+int XBEN1 = 15;
+int RBEN2 = 2;
+int XBEN2 = 15;
+int x30 = 50;
+int x31 = 180;
+int x32 = 180;
+int x40 = 115;
+int x41 = 245;
+int x42 = 245;
+int y30 = 101;
+int y31 = 161;
+int y32 = 41 ;
+int A30 = 0;
+int A31 = 0;
+int A32 = 0;
 //****************************** BASES ***********************************
 int x10 = 50;
 int x11 = 180;
@@ -157,21 +175,27 @@ extern uint8_t PLATAFORMA_LARGO[];
 extern uint8_t BUB[];
 extern uint8_t BUB_SALTANDO[];
 extern uint8_t BUB_BAJANDO[];
+extern uint8_t BUB_DISPARANDO[];
+extern uint8_t BUB_BURBUJA[];
 extern uint8_t BOB[];
 extern uint8_t BOB_SALTANDO[];
 extern uint8_t BOB_BAJANDO[];
 extern uint8_t BENZO[];
+extern uint8_t BENZO_BURBUJA[];
 extern uint8_t CHERRY[];
 extern uint8_t PINA[];
 extern uint8_t PERA[];
 extern uint8_t MANZANA[];
+extern uint8_t PUNTAJE[];
 //***************************************************************************************************************************************
 // GRAFICOS
 //***************************************************************************************************************************************
-unsigned char* BBUB =BUB;
-unsigned char* BBOB =BOB;
-unsigned char* BBENZO =BENZO;
-unsigned char* BMANZANA =MANZANA;
+unsigned char* BBUB = BUB;
+unsigned char* BBOB = BOB;
+unsigned char* BBENZO = BENZO;
+unsigned char* BBENZO1 = BENZO;
+unsigned char* BBENZO2 = BENZO;
+unsigned char* BMANZANA = MANZANA;
 
 //extern uint8_t BBUB1 [] = {BUB[],BUB_SALTANDO[],BUB_BAJANDO[]};
 //***************************************************************************************************************************************
@@ -204,7 +228,7 @@ void setup() {
 //***************************************************************************************************************************************
 void loop() {
   buttonState = digitalRead(buttonPin);
-  if (buttonState == LOW) {
+  if (buttonState == HIGH) {
     c = 1;
   }
   if (c == 0) {
@@ -278,99 +302,183 @@ void JUEGO(void) {
   LCD_Bitmap(x23, y23, 13, 17, PERA);
   //  LCD_Bitmap(x24, y24, 13, 17, MANZANA);
   //**********************************************************  BUB  ********************************************************************************
-  if (DERECHA_BUB == HIGH && IZQUIERDA_BUB == LOW && x1 <278) {
+  if (BURBUJA_BUB == HIGH ) {
+    Estado5 = 1;
+  }
+  if (Estado5 == 1 && BURBUJA_BUB == LOW && DERECHA_BUB == LOW && IZQUIERDA_BUB == LOW && SALTANDO_BUB == LOW &&  BAJANDO_BUB == LOW)  { //cuando el pulsador se suelta se
+    Estado5 = 0;
+    //x1 = x1 + 10;
+    R = 1;
+    BBUB = BUB_DISPARANDO;
+    U = 1;
+    XBU = x1;
+    YBU = y;
+  }
+  if (DERECHA_BUB == HIGH && IZQUIERDA_BUB == LOW && x1 < 278) {
     Estado1 = 1;
   }
   if (Estado1 == 1 &&  DERECHA_BUB == LOW && IZQUIERDA_BUB == LOW && SALTANDO_BUB == LOW &&  BAJANDO_BUB == LOW)  { //cuando el pulsador se suelta se
     Estado1 = 0;
     x1 = x1 + 10;
-    R =4;
+    R = 4;
     BBUB = BUB;
     FillRect(x1 - 10, y, 10, 18, 0x0000);
     PBUB = 0;
   }
 
-  if (IZQUIERDA_BUB == HIGH &&  DERECHA_BUB == LOW && x1 >18 ) {
+  if (IZQUIERDA_BUB == HIGH &&  DERECHA_BUB == LOW && x1 > 18 ) {
     Estado2 = 1;
   }
   if (Estado2 == 1 && IZQUIERDA_BUB == LOW &&  DERECHA_BUB == LOW && SALTANDO_BUB == LOW &&  BAJANDO_BUB == LOW) { //cuando el pulsador se suelta se
     Estado2 = 0;
     x1 = x1 - 10;
-    R =4;
+    R = 4;
     BBUB = BUB;
     FillRect(x1 + 10, y, 18, 18, 0x0000);
     PBUB = 1;
   }
-  if (SALTANDO_BUB == HIGH && BAJANDO_BUB == LOW && y >40) {
+  if (SALTANDO_BUB == HIGH && BAJANDO_BUB == LOW && y > 40) {
     Estado3 = 1;
   }
   if (Estado3 == 1 &&  SALTANDO_BUB == LOW &&  BAJANDO_BUB == LOW &&  DERECHA_BUB == LOW && IZQUIERDA_BUB == LOW)  { //cuando el pulsador se suelta se
     Estado3 = 0;
     y = y - 30 ;
-    R =2;
+    R = 2;
     BBUB = BUB_SALTANDO;
     FillRect(x1 - 10, y + 30, 26, 18, 0x0000);
   }
-  if (BAJANDO_BUB == HIGH && SALTANDO_BUB == LOW && y<190) {
+  if (BAJANDO_BUB == HIGH && SALTANDO_BUB == LOW && y < 190) {
     Estado4 = 1;
   }
   if (Estado4 == 1 &&  SALTANDO_BUB == LOW &&  BAJANDO_BUB == LOW &&  DERECHA_BUB == LOW && IZQUIERDA_BUB == LOW)  { //cuando el pulsador se suelta se
     Estado4 = 0;
     y = y + 30 ;
-    R =2;
+    R = 2;
     BBUB = BUB_BAJANDO;
     FillRect(x1 - 10, y - 30, 26, 18, 0x0000);
   }
-  if (( (((x1<(x10-10))||((x1>118)&&(x1<(x11-10)))||(x1>248))&&(y==160)) ||  (((x1<(x10-10))||((x1>118)&&(x1<(x11-10)))||(x1>248))&&(y==100)) || (((x1<(x10-10))||((x1>118)&&(x1<(x11-10)))||(x1>248))&&(y==40)) ||  (((x1<(x12-10))||(x1>183))&&(y==130)) || (((x1<(x12-10))||(x1>183))&&(y==70)) ) && (y<190)  )  { //cuando el pensonaje no este sobre ninguna base
+  if (( (((x1 < (x10 - 10)) || ((x1 > 118) && (x1 < (x11 - 10))) || (x1 > 248)) && (y == 160)) ||  (((x1 < (x10 - 10)) || ((x1 > 118) && (x1 < (x11 - 10))) || (x1 > 248)) && (y == 100)) || (((x1 < (x10 - 10)) || ((x1 > 118) && (x1 < (x11 - 10))) || (x1 > 248)) && (y == 40)) ||  (((x1 < (x12 - 10)) || (x1 > 183)) && (y == 130)) || (((x1 < (x12 - 10)) || (x1 > 183)) && (y == 70)) ) && (y < 190)  )  { //cuando el pensonaje no este sobre ninguna base
     y = y + 30 ;
     R = 2;
     BBUB = BUB_BAJANDO;
     FillRect(x1 - 10, y - 30, 26, 18, 0x0000);
   }
+
   int anim3 = (x1 / 11) % 2;
   LCD_Sprite(x1, y, 18, 18, BBUB, R, anim3, PBUB, 0);
-//||((y!=y10)&&(x1!=x10)) ||(y!=y12) || (y!=y13) ||(y!=y14) ||(y!=y15) ||(y!=y16) ||(y!=y17)
+  if (U == 1) {
+    if (XBU != 260 && XBU < 270) {
+      XBU = XBU + 1;
+      int anim6 = (XBU - 16 / 11) % 2;
+      LCD_Sprite(XBU + 18, YBU, 18, 18, BUB_BURBUJA, 1, anim6, PBUB, 0);
+      V_line( (XBU + 18) - 1, YBU, 18, 0x0000);
+    }
+  }
+
+  //||((y!=y10)&&(x1!=x10)) ||(y!=y12) || (y!=y13) ||(y!=y14) ||(y!=y15) ||(y!=y16) ||(y!=y17)
 
   //******************************************************************************************************************************************
   // BENZON (VILLANOS)
   //***************************************************************************************************************************************
-  if (x == 180 ) {
-    A = 0;
+  if (x30 == 50 ) {
+    A30 = 0;
   }
-  if (x == 245 ) {
-    x3 = 245;
-    x = 0;
-    A = 1;
+  if (x31 == 180 ) {
+    A31 = 0;
   }
-  if (x3 == 180 ) {
-    x = 180;
-    x3 = 0;
+  if (x32 == 180 ) {
+    A32 = 0;
   }
-  if (x != 245 && A == 0) {
-    x++;
-    int anim2 = (x - 16 / 11) % 2;
-    LCD_Sprite(x, 41, 15, 18, BENZO, 2, anim2, 0, 0);
-    V_line( x - 1, 41, 18, 0x0000);
-    LCD_Sprite(x, 161, 15, 18, BENZO, 2, anim2, 0, 0);
-    V_line( x - 1, 161, 18, 0x0000);
-    x = x - 130;
-    LCD_Sprite(x, 101, 15, 18, BENZO, 2, anim2, 0, 0);
-    V_line( x - 1, 101, 18, 0x0000);
-    x = x + 130;
+  //*********************************************
+  if (x30 == 115 ) {
+    x40 = 115;
+    x30 = 0;
+    A30 = 1;
   }
-  if (x3 != 180 && A == 1 ) {
-    x3--;
-    int anim4 = (x3 - 16 / 11) % 2;
-    LCD_Sprite(x3, 41, 15, 18, BENZO, 2, anim4, 1, 0);
-    V_line( x3 + 15, 41, 18, 0x0000);
-    LCD_Sprite(x3, 161, 15, 18, BENZO, 2, anim4, 1, 0);
-    V_line( x3 + 15, 161, 18, 0x0000);
-    x3 = x3 - 130;
-    LCD_Sprite(x3, 101, 15, 18, BENZO, 2, anim4, 1, 0);
-    V_line( x3 + 15, 101, 18, 0x0000);
-    x3 = x3 + 130;
+  if (x31 == 245 ) {
+    x41 = 245;
+    x31 = 0;
+    A31 = 1;
+  }
+  if (x32 == 245 ) {
+    x42 = 245;
+    x32 = 0;
+    A32 = 1;
+  }
+  //*********************************************
+  if (x40 == 50 ) {
+    x30 = 50;
+    x40 = 0;
+  }
+  if (x41 == 180 ) {
+    x31 = 180;
+    x41 = 0;
+  }
+  if (x42 == 180 ) {
+    x32 = 180;
+    x42 = 0;
+  }
+  //******************************************* DERECHA ********************************************
+  if (x30 != 115 && A30 == 0) {
+    x30++;
+    int anim2 = (x30 - 16 / 11) % 2;
+    LCD_Sprite(x30, y30, XBEN, 18, BBENZO, RBEN, anim2, 0, 0);
+    V_line( x30 - 1, y30, 18, 0x0000);
+  }
+  if (x31 != 245 && A31 == 0) {
+    x31++;
+    int anim2 = (x31 - 16 / 11) % 2;
+    LCD_Sprite(x31, y31, XBEN1, 18, BBENZO1, RBEN1, anim2, 0, 0);
+    V_line( x31 - 1, y31, 18, 0x0000);
+  }
+  if (x32 != 245 && A32 == 0) {
+    x32++;
+    int anim2 = (x32 - 16 / 11) % 2;
+    LCD_Sprite(x32, y32, XBEN2, 18, BBENZO2, RBEN2, anim2, 0, 0);
+    V_line( x32 - 1, y32, 18, 0x0000);
+  }
+  //******************************************* IZQUIERDA ********************************************
+  if (x40 != 50 && A30 == 1) {
+    x40--;
+    int anim2 = (x40 - 16 / 11) % 2;
+    LCD_Sprite(x40, y30, XBEN, 18, BBENZO, RBEN, anim2, 1, 0);
+    V_line( x40 + 15, y30, 18, 0x0000);
+  }
+  if (x41 != 180 && A31 == 1) {
+    x41--;
+    int anim2 = (x41 - 16 / 11) % 2;
+    LCD_Sprite(x41, y31, XBEN1, 18, BBENZO1, RBEN1, anim2, 1, 0);
+    V_line( x41 + 15, y31, 18, 0x0000);
+  }
+  if (x42 != 180 && A32 == 1) {
+    x42--;
+    int anim2 = (x42 - 16 / 11) % 2;
+    LCD_Sprite(x42, y32, XBEN2, 18, BBENZO2, RBEN2, anim2, 1, 0);
+    V_line( x42 + 15, y32, 18, 0x0000);
   }
   //******************************************************************************************************************************************
+  if (XBU + 18 == x30 || XBU + 18 == x40 ) {
+    BBENZO = BENZO_BURBUJA;
+    RBEN = 1;
+    XBEN = 18;
+  }
+  if (XBU + 18 == x31 || XBU + 18 == x41 ) {
+    BBENZO1 = BENZO_BURBUJA;
+    RBEN1 = 1;
+    XBEN1 = 18;
+  }
+  if (XBU + 18 == x32 || XBU + 18 == x42 ) {
+    BBENZO2 = BENZO_BURBUJA;
+    RBEN2 = 1;
+    XBEN2 = 18;
+  }
+
+  if ((x1 + 18 == x30 || x1 + 18 == x40)&& BBENZO == BENZO_BURBUJA ) {
+    BBENZO = PUNTAJE;
+    RBEN = 1;
+    XBEN = 18;
+  }
+
 }
 
 //***************************************************************************************************************************************
