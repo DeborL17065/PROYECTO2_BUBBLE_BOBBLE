@@ -100,6 +100,8 @@ int y2 = 190;
 int PBUB1 = 0;
 //****************************** BENZON **********************************
 int PB1 = 0;
+int PB2 = 0;
+int PB3 = 0;
 int RBEN = 2;
 int XBEN = 15;
 int RBEN1 = 2;
@@ -430,13 +432,13 @@ void JUEGO(void) {
     V_line( x30 - 1, y30, 18, 0x0000);
   }
 
-  if (x31 != 245 && A31 == 0) {
+  if (x31 != 245 && A31 == 0 && PB2 == 0) {
     x31++;
     int anim2 = (x31 - 16 / 11) % 2;
     LCD_Sprite(x31, y31, XBEN1, 18, BBENZO1, RBEN1, anim2, 0, 0);
     V_line( x31 - 1, y31, 18, 0x0000);
   }
-  if (x32 != 245 && A32 == 0) {
+  if (x32 != 245 && A32 == 0 && PB3 == 0) {
     x32++;
     int anim2 = (x32 - 16 / 11) % 2;
     LCD_Sprite(x32, y32, XBEN2, 18, BBENZO2, RBEN2, anim2, 0, 0);
@@ -452,24 +454,37 @@ void JUEGO(void) {
   //    if (BBENZO == PUNTAJE) {
   //      FillRect(x40, y30, XBEN, 18, 0x0000);
   //    }
-  if (x41 != 180 && A31 == 1) {
+  if (x41 != 180 && A31 == 1 && PB2 == 0) {
     x41--;
     int anim2 = (x41 - 16 / 11) % 2;
     LCD_Sprite(x41, y31, XBEN1, 18, BBENZO1, RBEN1, anim2, 1, 0);
     V_line( x41 + 15, y31, 18, 0x0000);
   }
-  if (x42 != 180 && A32 == 1) {
+  if (x42 != 180 && A32 == 1 && PB3 == 0) {
     x42--;
     int anim2 = (x42 - 16 / 11) % 2;
     LCD_Sprite(x42, y32, XBEN2, 18, BBENZO2, RBEN2, anim2, 1, 0);
     V_line( x42 + 15, y32, 18, 0x0000);
   }
   //******************************************************************************************************************************************
+  // ***************************************** BUB ********************************************************
   if (BBENZO == PUNTAJE) {
+    y30 = 220;
     FillRect(x40, y30, XBEN, 18, 0x0000);
     FillRect(x30, y30, XBEN, 18, 0x0000);
-    y30 = 220;
     PB1 = 1;
+  }
+  if (BBENZO1 == PUNTAJE) {
+    y31 = 220;
+    FillRect(x41, y31, XBEN1, 18, 0x0000);
+    FillRect(x31, y31, XBEN1, 18, 0x0000);
+    PB2 = 1;
+  }
+  if (BBENZO2 == PUNTAJE) {
+    y32 = 220;
+    FillRect(x42, y32, XBEN2, 18, 0x0000);
+    FillRect(x32, y32, XBEN2, 18, 0x0000);
+    PB3 = 1;
   }
   if ((XBU + 36 == x30 || XBU + 36 == x40) && YBU == y30 ) {
     BBENZO = BENZO_BURBUJA;
@@ -494,7 +509,18 @@ void JUEGO(void) {
     RBEN = 1;
     XBEN = 18;
     YBU = 220;
-    //PB1 = 1;
+  }
+  if ((x1 + 18 == x31 || x1 + 18 == x41) && BBENZO1 == BENZO_BURBUJA ) {
+    BBENZO1 = PUNTAJE;
+    RBEN1 = 1;
+    XBEN1 = 18;
+    YBU = 220;
+  }
+  if ((x1 + 18 == x32 || x1 + 18 == x42) && BBENZO2 == BENZO_BURBUJA ) {
+    BBENZO2 = PUNTAJE;
+    RBEN2 = 1;
+    XBEN2 = 18;
+    YBU = 220;
   }
 
 
