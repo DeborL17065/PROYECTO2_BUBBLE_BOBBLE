@@ -151,6 +151,13 @@ int y15 = 90;
 int y16 = 60;
 int y17 = 60;
 //****************************** FRUTAS ***********************************
+int G1 = 0;
+int G2 = 0;
+int G3 = 0;
+int G4 = 0;
+int G5 = 0;
+int G6 = 0;
+int G7 = 0;
 int y20 = 70;
 int y21 = 190;
 int y22 = 40;
@@ -158,12 +165,14 @@ int y23 = 100;
 int x20 = 135;
 int x21 = 136;
 int x22 = 75;
-int x23 = 212 ;
+int x23 = 215 ;
 //***************************************************************************************************************************************
 // TABLERO DE PUNTOS
 //***************************************************************************************************************************************
 String text1 = "P1";
 String text2 = "P2";
+String text10 = "BUB WIN";
+String text20 = "BOB WIN";
 String GO = "";
 //***************************************************************************************************************************************
 // ESTADOS
@@ -379,7 +388,13 @@ void loop() {
             //******************************************************
             JUEGO();
 
-          } while ((y30 != 220) && (y31 != 220)&&(y32 != 220) && (y20 != 220)&& (y21 != 220) && (y22 != 220)&&(y23 != 220));
+          } while (G1 != 7);
+          if (PUNTAJE1 > PUNTAJE2) {
+            LCD_Print(text10, 160, 110, 200, 0xbfc3, 0x0000);
+          }
+          else {
+            LCD_Print(text20, 160, 110, 200, 0x4e7b, 0x0000);
+          }
           break;
       }
     }
@@ -525,14 +540,14 @@ void JUEGO(void) {
       XBU--;
       int anim6 = (XBU - 16 / 11) % 2;
       LCD_Sprite(XBU - 18, YBU, 18, 18, BUB_BURBUJA, 1, anim6, PBUB, 0);
-      V_line( (XBU-18) + 18, YBU, 18, 0x0000);
+      V_line( (XBU - 18) + 18, YBU, 18, 0x0000);
     }
   }
   if (U == 3)  {
     FillRect(XBU - 18, YBU, 18, 18, 0x0000);
   }
-//**********************************************************  BOB  ********************************************************************************
-if (BURBUJA_BOB == HIGH ) {
+  //**********************************************************  BOB  ********************************************************************************
+  if (BURBUJA_BOB == HIGH ) {
     Estado10 = 1;
   }
   if (Estado10 == 1 && PBOB == 0 && BURBUJA_BOB == LOW && DERECHA_BOB == LOW && IZQUIERDA_BOB == LOW && SALTANDO_BOB == LOW &&  BAJANDO_BOB == LOW)  { //cuando el pulsador se suelta se
@@ -591,8 +606,8 @@ if (BURBUJA_BOB == HIGH ) {
   }
   if (Estado9 == 1 &&  SALTANDO_BOB == LOW &&  BAJANDO_BOB == LOW &&  DERECHA_BOB == LOW && IZQUIERDA_BOB == LOW)  { //cuando el pulsador se suelta se
     Estado9 = 0;
-    y2= y2 + 30 ;
-    R1= 2;
+    y2 = y2 + 30 ;
+    R1 = 2;
     BBOB = BOB_BAJANDO;
     FillRect(x2 - 10, y2 - 30, 26, 18, 0x0000);
   }
@@ -622,7 +637,7 @@ if (BURBUJA_BOB == HIGH ) {
       XBO--;
       int anim8 = (XBO - 16 / 11) % 2;
       LCD_Sprite(XBO - 18, YBO, 18, 18, BOB_BURBUJA, 1, anim8, PBOB, 0);
-      V_line( (XBO-18) + 18, YBO, 18, 0x0000);
+      V_line( (XBO - 18) + 18, YBO, 18, 0x0000);
     }
   }
   if (U1 == 3)  {
@@ -712,11 +727,13 @@ if (BURBUJA_BOB == HIGH ) {
   // ***************************************** BUB ********************************************************
   if (BBENZO == PUNTAJE) {
     y30 = 220;
+    G1 = G1 + 1;
     FillRect(x40, y30, XBEN, 18, 0x0000);
     FillRect(x30, y30, XBEN, 18, 0x0000);
     PB1 = 1;
   }
   if (BBENZO1 == PUNTAJE) {
+    G1 = G1 + 1;
     y31 = 220;
     FillRect(x41, y31, XBEN1, 18, 0x0000);
     FillRect(x31, y31, XBEN1, 18, 0x0000);
@@ -724,6 +741,7 @@ if (BURBUJA_BOB == HIGH ) {
   }
   if (BBENZO2 == PUNTAJE) {
     y32 = 220;
+    G1 = G1 + 1;
     FillRect(x42, y32, XBEN2, 18, 0x0000);
     FillRect(x32, y32, XBEN2, 18, 0x0000);
     PB3 = 1;
@@ -731,20 +749,24 @@ if (BURBUJA_BOB == HIGH ) {
   //**************************************************************
   if (BMANZANA == PUNTAJE) {
     FillRect(x20, y20, 13, 17, 0x0000);
+    G1 = G1 + 1;
     y20 = 220;
     x20 = 330;
   }
   if (BCHERRY == PUNTAJE) {
     FillRect(x21, y21, 13, 17, 0x0000);
+    G1 = G1 + 1;
     y21 = 220;
     x21 = 330;
   }
   if (BPINA == PUNTAJE) {
+    G1 = G1 + 1;
     FillRect(x22, y22, 13, 17, 0x0000);
     y22 = 220;
     x22 = 330;
   }
   if (BPERA == PUNTAJE) {
+    G1 = G1 + 1;
     FillRect(x23, y23, 13, 17, 0x0000);
     y23 = 220;
     x23 = 330;
@@ -790,7 +812,7 @@ if (BURBUJA_BOB == HIGH ) {
     XBEN2 = 18;
     YBU = 220;
   }
-   // ***************************************** BOB ********************************************************
+  // ***************************************** BOB ********************************************************
   //**************************************************************
   if ((XBO + 36 == x30 || XBO + 36 == x40) && YBO == y30 ) {
     BBENZO = BENZO_BURBUJA;
@@ -851,7 +873,7 @@ if (BURBUJA_BOB == HIGH ) {
     PUNTAJE1 = PUNTAJE1 + 50;
   }
   //*********************** BOB *****************************
-  if ( (x2 + 18 == x20 || x2 == x20 + 13 ) && y2== y20) {
+  if ( (x2 + 18 == x20 || x2 == x20 + 13 ) && y2 == y20) {
     BMANZANA = PUNTAJE;
     PUNTAJE2 = PUNTAJE2 + 50;
   }
