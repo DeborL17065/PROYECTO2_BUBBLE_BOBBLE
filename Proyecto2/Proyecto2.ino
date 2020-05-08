@@ -87,6 +87,7 @@ int BURBUJA_BOB = 0;
 // DEFINIENDO POSICIONES
 //***************************************************************************************************************************************
 //****************************** BUB***********************************
+int PUNTAJE1 = 0;
 int PBUB = 0;
 int R = 4;
 int y = 190;
@@ -95,6 +96,7 @@ int U = 0;
 int XBU = 1;
 int YBU = 0;
 //****************************** BOB***********************************
+int PUNTAJE2 = 0;
 int x2 = 18;
 int y2 = 190;
 int PBUB1 = 0;
@@ -150,9 +152,7 @@ int x23 = 195;
 // TABLERO DE PUNTOS
 //***************************************************************************************************************************************
 String text1 = "P1";
-String text3 = "0000";
 String text2 = "P2";
-String text4 = "0000";
 //***************************************************************************************************************************************
 // ESTADOS
 //***************************************************************************************************************************************
@@ -199,6 +199,9 @@ unsigned char* BBENZO = BENZO;
 unsigned char* BBENZO1 = BENZO;
 unsigned char* BBENZO2 = BENZO;
 unsigned char* BMANZANA = MANZANA;
+unsigned char* BCHERRY = CHERRY;
+unsigned char* BPERA = PERA;
+unsigned char* BPINA = PINA;
 
 //extern uint8_t BBUB1 [] = {BUB[],BUB_SALTANDO[],BUB_BAJANDO[]};
 //***************************************************************************************************************************************
@@ -258,6 +261,8 @@ void loop() {
 }
 //******************************************************************************************************************************************
 void JUEGO(void) {
+  String text3 = String(PUNTAJE1);
+  String text4 = String(PUNTAJE2);
   DERECHA_BUB = digitalRead(buttonPin1);
   IZQUIERDA_BUB = digitalRead(buttonPin2);
   SALTANDO_BUB = digitalRead(buttonPin3);
@@ -299,10 +304,10 @@ void JUEGO(void) {
   LCD_Bitmap(x16, y16, 80, 8, PLATAFORMA_LARGO);
   LCD_Bitmap(x17, y17, 80, 8, PLATAFORMA_LARGO);
 
-  LCD_Bitmap(x20, y20, 13, 17, CHERRY);
-  LCD_Bitmap(x21, y21, 13, 17, CHERRY);
-  LCD_Bitmap(x22, y22, 13, 17, PINA);
-  LCD_Bitmap(x23, y23, 13, 17, PERA);
+  LCD_Bitmap(x20, y20, 13, 17, BMANZANA);
+  LCD_Bitmap(x21, y21, 13, 17, BCHERRY);
+  LCD_Bitmap(x22, y22, 13, 17, BPINA);
+  LCD_Bitmap(x23, y23, 13, 17, BPERA);
   //  LCD_Bitmap(x24, y24, 13, 17, MANZANA);
   //**********************************************************  BUB  ********************************************************************************
   if (BURBUJA_BUB == HIGH ) {
@@ -486,6 +491,26 @@ void JUEGO(void) {
     FillRect(x32, y32, XBEN2, 18, 0x0000);
     PB3 = 1;
   }
+  if (BMANZANA == PUNTAJE) {
+    FillRect(x20, y20, 13, 17, 0x0000);
+    y20 = 220;
+    x20 = 330;
+  }
+  if (BCHERRY == PUNTAJE) {
+    FillRect(x21, y21, 13, 17, 0x0000);
+    y21 = 220;
+    x21 = 330;
+  }
+  if (BPINA == PUNTAJE) {
+    FillRect(x22, y22, 13, 17, 0x0000);
+    y22 = 220;
+    x22 = 330;
+  }
+  if (BPERA == PUNTAJE) {
+    FillRect(x23, y23, 13, 17, 0x0000);
+    y23 = 220;
+    x23 = 330;
+  }
   if ((XBU + 36 == x30 || XBU + 36 == x40) && YBU == y30 ) {
     BBENZO = BENZO_BURBUJA;
     RBEN = 1;
@@ -506,21 +531,41 @@ void JUEGO(void) {
   }
   if ((x1 + 18 == x30 || x1 + 18 == x40) && BBENZO == BENZO_BURBUJA ) {
     BBENZO = PUNTAJE;
+    PUNTAJE1 = PUNTAJE1 + 100;
     RBEN = 1;
     XBEN = 18;
     YBU = 220;
   }
   if ((x1 + 18 == x31 || x1 + 18 == x41) && BBENZO1 == BENZO_BURBUJA ) {
     BBENZO1 = PUNTAJE;
+    PUNTAJE1 = PUNTAJE1 + 100;
     RBEN1 = 1;
     XBEN1 = 18;
     YBU = 220;
   }
   if ((x1 + 18 == x32 || x1 + 18 == x42) && BBENZO2 == BENZO_BURBUJA ) {
     BBENZO2 = PUNTAJE;
+    PUNTAJE1 = PUNTAJE1 + 100;
     RBEN2 = 1;
     XBEN2 = 18;
     YBU = 220;
+  }
+  //******************* FRUTAS *********************************************
+  if ( x1 + 18 == x20 || x1 == x20 + 13 ) {
+    BMANZANA = PUNTAJE;
+    PUNTAJE1 = PUNTAJE1 + 100;
+  }
+  if ( x1 + 18 == x21 || x1 == x21 + 13 ) {
+    BCHERRY = PUNTAJE;
+    PUNTAJE1 = PUNTAJE1 + 100;
+  }
+  if ( x1 + 18 == x22 || x1 == x22 + 13 ) {
+    BPINA = PUNTAJE;
+    PUNTAJE1 = PUNTAJE1 + 100;
+  }
+  if ( x1 + 18 == x23 || x1 == x23 + 13 ) {
+    BPERA = PUNTAJE;
+    PUNTAJE1 = PUNTAJE1 + 100;
   }
 
 
