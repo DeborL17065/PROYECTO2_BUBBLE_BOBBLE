@@ -375,6 +375,9 @@ void JUEGO(void) {
       V_line( (XBU + 18) - 1, YBU, 18, 0x0000);
     }
   }
+  else {
+    FillRect(XBU + 18, YBU, 18, 18, 0x0000);
+  }
 
   //||((y!=y10)&&(x1!=x10)) ||(y!=y12) || (y!=y13) ||(y!=y14) ||(y!=y15) ||(y!=y16) ||(y!=y17)
 
@@ -426,6 +429,7 @@ void JUEGO(void) {
     LCD_Sprite(x30, y30, XBEN, 18, BBENZO, RBEN, anim2, 0, 0);
     V_line( x30 - 1, y30, 18, 0x0000);
   }
+
   if (x31 != 245 && A31 == 0) {
     x31++;
     int anim2 = (x31 - 16 / 11) % 2;
@@ -445,6 +449,9 @@ void JUEGO(void) {
     LCD_Sprite(x40, y30, XBEN, 18, BBENZO, RBEN, anim2, 1, 0);
     V_line( x40 + 15, y30, 18, 0x0000);
   }
+  //    if (BBENZO == PUNTAJE) {
+  //      FillRect(x40, y30, XBEN, 18, 0x0000);
+  //    }
   if (x41 != 180 && A31 == 1) {
     x41--;
     int anim2 = (x41 - 16 / 11) % 2;
@@ -458,28 +465,36 @@ void JUEGO(void) {
     V_line( x42 + 15, y32, 18, 0x0000);
   }
   //******************************************************************************************************************************************
+  if (BBENZO == PUNTAJE) {
+    FillRect(x40, y30, XBEN, 18, 0x0000);
+    FillRect(x30, y30, XBEN, 18, 0x0000);
+    y30 = 220;
+    PB1 = 1;
+  }
   if ((XBU + 36 == x30 || XBU + 36 == x40) && YBU == y30 ) {
     BBENZO = BENZO_BURBUJA;
     RBEN = 1;
     XBEN = 18;
-    U =0;
+    U = 0;
   }
-  if (XBU + 36 == x31 || XBU + 36 == x41 ) {
+  if ((XBU + 36 == x31 || XBU + 36 == x41) && YBU == y31 ) {
     BBENZO1 = BENZO_BURBUJA;
     RBEN1 = 1;
     XBEN1 = 18;
-    U =0;
+    U = 0;
   }
-  if (XBU + 36 == x32 || XBU + 36 == x42 ) {
+  if ((XBU + 36 == x32 || XBU + 36 == x42) && YBU == y32) {
     BBENZO2 = BENZO_BURBUJA;
     RBEN2 = 1;
     XBEN2 = 18;
-    U =0;
+    U = 0;
   }
   if ((x1 + 18 == x30 || x1 + 18 == x40) && BBENZO == BENZO_BURBUJA ) {
     BBENZO = PUNTAJE;
     RBEN = 1;
     XBEN = 18;
+    YBU = 220;
+    //PB1 = 1;
   }
 
 
