@@ -12,6 +12,8 @@
 //***************************************************************************************************************************************
 #include <stdint.h>
 #include <stdbool.h>
+#include <SPI.h>
+#include <SD.h>
 //#include <lcd_registers.h>
 #include <TM4C123GH6PM.h>
 #include "inc/hw_ints.h"
@@ -24,7 +26,7 @@
 #include "driverlib/rom.h"
 #include "driverlib/sysctl.h"
 #include "driverlib/timer.h"
-
+#include "pitches.h"
 #include "bitmaps.h"
 #include "font.h"
 #include "lcd_registers.h"
@@ -34,6 +36,11 @@
 #define LCD_RS PD_2
 #define LCD_WR PD_3
 #define LCD_RD PE_1
+
+File  root, myFile;
+String Select;
+boolean operacionValida = true; // Sirve para validar la operación ingresada
+
 int DPINS[] = {PB_0, PB_1, PB_2, PB_3, PB_4, PB_5, PB_6, PB_7};
 //***************************************************************************************************************************************
 // Functions Prototypes
@@ -97,9 +104,13 @@ int XBU = 1;
 int YBU = 0;
 //****************************** BOB***********************************
 int PUNTAJE2 = 0;
-int x2 = 18;
+int x2 = 200;
+int R1 = 4;
 int y2 = 190;
-int PBUB1 = 0;
+int U1 = 0;
+int PBOB = 0;
+int XBO = 1;
+int YBO = 0;
 //****************************** BENZON **********************************
 int PB1 = 0;
 int PB2 = 0;
@@ -153,6 +164,7 @@ int x23 = 212 ;
 //***************************************************************************************************************************************
 String text1 = "P1";
 String text2 = "P2";
+String GO = "";
 //***************************************************************************************************************************************
 // ESTADOS
 //***************************************************************************************************************************************
@@ -183,6 +195,8 @@ extern uint8_t BUB_BURBUJA[];
 extern uint8_t BOB[];
 extern uint8_t BOB_SALTANDO[];
 extern uint8_t BOB_BAJANDO[];
+extern uint8_t BOB_DISPARANDO[];
+extern uint8_t BOB_BURBUJA[];
 extern uint8_t BENZO[];
 extern uint8_t BENZO_BURBUJA[];
 extern uint8_t CHERRY[];
@@ -202,7 +216,60 @@ unsigned char* BMANZANA = MANZANA;
 unsigned char* BCHERRY = CHERRY;
 unsigned char* BPERA = PERA;
 unsigned char* BPINA = PINA;
+unsigned char* GL = GOOD_LOCK;
 
+//***************************************************************************************************************************************
+// MELODIA
+//***************************************************************************************************************************************
+// change this to make the song slower or faster
+int tempo = 160;
+// change this to whichever pin you want to use
+int buzzer = 17;
+int melody[] = {
+  // Keyboard cat
+  // Score available at https://musescore.com/user/142788/scores/147371
+  NOTE_C4, 4, NOTE_E4, 4, NOTE_G4, 4, NOTE_E4, 4,
+  NOTE_C4, 4, NOTE_E4, 8, NOTE_G4, -4, NOTE_E4, 4,
+  NOTE_A3, 4, NOTE_C4, 4, NOTE_E4, 4, NOTE_C4, 4,
+  NOTE_A3, 4, NOTE_C4, 8, NOTE_E4, -4, NOTE_C4, 4,
+  NOTE_G3, 4, NOTE_B3, 4, NOTE_D4, 4, NOTE_B3, 4,
+  NOTE_G3, 4, NOTE_B3, 8, NOTE_D4, -4, NOTE_B3, 4,
+
+  NOTE_G3, 4, NOTE_G3, 8, NOTE_G3, -4, NOTE_G3, 8, NOTE_G3, 4,
+  NOTE_G3, 4, NOTE_G3, 4, NOTE_G3, 8, NOTE_G3, 4,
+  NOTE_C4, 4, NOTE_E4, 4, NOTE_G4, 4, NOTE_E4, 4,
+  NOTE_C4, 4, NOTE_E4, 8, NOTE_G4, -4, NOTE_E4, 4,
+  NOTE_A3, 4, NOTE_C4, 4, NOTE_E4, 4, NOTE_C4, 4,
+  NOTE_A3, 4, NOTE_C4, 8, NOTE_E4, -4, NOTE_C4, 4,
+  NOTE_G3, 4, NOTE_B3, 4, NOTE_D4, 4, NOTE_B3, 4,
+  NOTE_G3, 4, NOTE_B3, 8, NOTE_D4, -4, NOTE_B3, 4,
+
+  NOTE_C4, 4, NOTE_E4, 4, NOTE_G4, 4, NOTE_E4, 4,
+  NOTE_C4, 4, NOTE_E4, 8, NOTE_G4, -4, NOTE_E4, 4,
+  NOTE_A3, 4, NOTE_C4, 4, NOTE_E4, 4, NOTE_C4, 4,
+  NOTE_A3, 4, NOTE_C4, 8, NOTE_E4, -4, NOTE_C4, 4,
+  NOTE_G3, 4, NOTE_B3, 4, NOTE_D4, 4, NOTE_B3, 4,
+  NOTE_G3, 4, NOTE_B3, 8, NOTE_D4, -4, NOTE_B3, 4,
+
+
+  NOTE_G3, 4, NOTE_G3, 8, NOTE_G3, -4, NOTE_G3, 8, NOTE_G3, 4,
+  NOTE_G3, 4, NOTE_G3, 4, NOTE_G3, 8, NOTE_G3, 4,
+  NOTE_C4, 4, NOTE_E4, 4, NOTE_G4, 4, NOTE_E4, 4,
+  NOTE_C4, 4, NOTE_E4, 8, NOTE_G4, -4, NOTE_E4, 4,
+  NOTE_A3, 4, NOTE_C4, 4, NOTE_E4, 4, NOTE_C4, 4,
+  NOTE_A3, 4, NOTE_C4, 8, NOTE_E4, -4, NOTE_C4, 4,
+  NOTE_G3, 4, NOTE_B3, 4, NOTE_D4, 4, NOTE_B3, 4,
+  NOTE_G3, 4, NOTE_B3, 8, NOTE_D4, -4, NOTE_B3, 4,
+  // NOTE_G3,-1,
+};
+// sizeof gives the number of bytes, each int value is composed of two bytes (16 bits)
+// there are two values per note (pitch and duration), so for each note there are four bytes
+int notes = sizeof(melody) / sizeof(melody[0]) / 2;
+
+// this calculates the duration of a whole note in ms
+int wholenote = (60000 * 4) / tempo;
+int divider = 0, noteDuration = 0;
+int thisNote = 0;
 //extern uint8_t BBUB1 [] = {BUB[],BUB_SALTANDO[],BUB_BAJANDO[]};
 //***************************************************************************************************************************************
 // Inicialización
@@ -226,6 +293,27 @@ void setup() {
   pinMode(buttonPin8, INPUT_PULLUP);
   pinMode(buttonPin9, INPUT_PULLUP);
   pinMode(buttonPin10, INPUT_PULLUP);
+
+  // Open serial communications and wait for port to open:
+  //  Serial.begin(9600);
+  //  while (!Serial) {
+  //    ; // wait for serial port to connect. Needed for Leonardo only
+  //  }
+  SPI.setModule(0);
+
+  Serial.print("Initializing SD card...");
+  // On the Ethernet Shield, CS is pin 4. It's set as an output by default.
+  // Note that even if it's not used as the CS pin, the hardware SS pin
+  // (10 on most Arduino boards, 53 on the Mega) must be left as an output
+  // or the SD library functions will not work.
+  // pinMode(10, OUTPUT);
+
+  if (!SD.begin(4)) {
+    Serial.println("initialization failed!");
+    return;
+  }
+  Serial.println("initialization done.");
+
   //FillRect(0, 0, 319, 206, 0x421b);
   //LCD_Sprite(int x, int y, int width, int height, unsigned char bitmap[],int columns, int index, char flip, char offset);
 }
@@ -245,15 +333,53 @@ void loop() {
     for (f = 0; f < 2; f++) {
       switch (f) { // SEMAFORO
         case 0:
+          myFile = SD.open("mario.txt");
+          while (myFile.available()) {
+            char caracter = myFile.read();
+            GO = caracter;
+            if (GO == "1") {
+              GL = GOOD_LOCK;
+            }
+            else {
+              GL = CHERRY;
+            }
+          }
+          myFile.close();
           LCD_Clear(0x00);
-          LCD_Bitmap(55 , 30, 210, 170, GOOD_LOCK);
+          LCD_Bitmap(55 , 30, 210, 170, GL);
           delay(1000);
           LCD_Clear(0x00);
+
           break;
         case 1:
           do {
+            //*************** MELODIA ***************************
+            if (thisNote >= notes * 2) {
+              thisNote = 0;
+            }
+            if (thisNote < notes * 2) {
+              thisNote = thisNote + 2;
+              // calculates the duration of each note
+              divider = melody[thisNote + 1];
+              if (divider > 0) {
+                // regular note, just proceed
+                noteDuration = (wholenote) / divider;
+              } else if (divider < 0) {
+                // dotted notes are represented with negative durations!!
+                noteDuration = (wholenote) / abs(divider);
+                noteDuration *= 1.5; // increases the duration in half for dotted notes
+              }
+              // we only play the note for 90% of the duration, leaving 10% as a pause
+              tone(buzzer, melody[thisNote], noteDuration * 0.5);
+              // Wait for the specief duration before playing the next note.
+              delay(50);
+              // stop the waveform generation before the next note.
+              noTone(buzzer);
+            }
+            //******************************************************
             JUEGO();
-          } while ((c == 1) && (c == 1));
+
+          } while ((y30 != 220) && (y31 != 220)&&(y32 != 220) && (y20 != 220)&& (y21 != 220) && (y22 != 220)&&(y23 != 220));
           break;
       }
     }
@@ -274,8 +400,8 @@ void JUEGO(void) {
   BAJANDO_BOB = digitalRead(buttonPin9);
   BURBUJA_BOB = digitalRead(buttonPin10);
   //***************************************************************************************************************************************
-  LCD_Print(text1, 25, 3, 2, 0xbfc3, 0x0000);
-  LCD_Print(text3, 65, 5, 1, 0xffff, 0x0000);
+  LCD_Print(text1, 35, 3, 2, 0xbfc3, 0x0000);
+  LCD_Print(text3, 70, 5, 1, 0xffff, 0x0000);
   LCD_Print(text2, 220, 3, 2, 0x4e7b, 0x0000);
   LCD_Print(text4, 260, 5, 1, 0xffff, 0x0000);
   //***************************************************************************************************************************************
@@ -312,7 +438,7 @@ void JUEGO(void) {
   if (BURBUJA_BUB == HIGH ) {
     Estado5 = 1;
   }
-  if (Estado5 == 1 && BURBUJA_BUB == LOW && DERECHA_BUB == LOW && IZQUIERDA_BUB == LOW && SALTANDO_BUB == LOW &&  BAJANDO_BUB == LOW)  { //cuando el pulsador se suelta se
+  if (Estado5 == 1 && PBUB == 0 && BURBUJA_BUB == LOW && DERECHA_BUB == LOW && IZQUIERDA_BUB == LOW && SALTANDO_BUB == LOW &&  BAJANDO_BUB == LOW)  { //cuando el pulsador se suelta se
     Estado5 = 0;
     //x1 = x1 + 10;
     R = 1;
@@ -321,10 +447,19 @@ void JUEGO(void) {
     XBU = x1;
     YBU = y;
   }
+  if (Estado5 == 1 && PBUB == 1 && BURBUJA_BUB == LOW && DERECHA_BUB == LOW && IZQUIERDA_BUB == LOW && SALTANDO_BUB == LOW &&  BAJANDO_BUB == LOW)  { //cuando el pulsador se suelta se
+    Estado5 = 0;
+    //x1 = x1 + 10;
+    R = 1;
+    BBUB = BUB_DISPARANDO;
+    U = 2;
+    XBU = x1;
+    YBU = y;
+  }
   if (DERECHA_BUB == HIGH && IZQUIERDA_BUB == LOW && x1 < 278) {
     Estado1 = 1;
   }
-  if (Estado1 == 1 &&  DERECHA_BUB == LOW && IZQUIERDA_BUB == LOW && SALTANDO_BUB == LOW &&  BAJANDO_BUB == LOW)  { //cuando el pulsador se suelta se
+  if (Estado1 == 1  &&  DERECHA_BUB == LOW && IZQUIERDA_BUB == LOW && SALTANDO_BUB == LOW &&  BAJANDO_BUB == LOW)  { //cuando el pulsador se suelta se
     Estado1 = 0;
     x1 = x1 + 10;
     R = 4;
@@ -370,8 +505,10 @@ void JUEGO(void) {
     BBUB = BUB_BAJANDO;
     FillRect(x1 - 10, y - 30, 26, 18, 0x0000);
   }
+  //*********************************
   int anim3 = (x1 / 11) % 2;
   LCD_Sprite(x1, y, 18, 18, BBUB, R, anim3, PBUB, 0);
+  //**********************************
   if (U == 1) {
     if (XBU != 260 && XBU < 270) {
       XBU++;
@@ -380,8 +517,116 @@ void JUEGO(void) {
       V_line( (XBU + 18) - 1, YBU, 18, 0x0000);
     }
   }
-  else {
+  if (U == 0) {
     FillRect(XBU + 18, YBU, 18, 18, 0x0000);
+  }
+  if (U == 2) {
+    if (XBU != 33 && XBU > 18) {
+      XBU--;
+      int anim6 = (XBU - 16 / 11) % 2;
+      LCD_Sprite(XBU - 18, YBU, 18, 18, BUB_BURBUJA, 1, anim6, PBUB, 0);
+      V_line( (XBU-18) + 18, YBU, 18, 0x0000);
+    }
+  }
+  if (U == 3)  {
+    FillRect(XBU - 18, YBU, 18, 18, 0x0000);
+  }
+//**********************************************************  BOB  ********************************************************************************
+if (BURBUJA_BOB == HIGH ) {
+    Estado10 = 1;
+  }
+  if (Estado10 == 1 && PBOB == 0 && BURBUJA_BOB == LOW && DERECHA_BOB == LOW && IZQUIERDA_BOB == LOW && SALTANDO_BOB == LOW &&  BAJANDO_BOB == LOW)  { //cuando el pulsador se suelta se
+    Estado10 = 0;
+    //x1 = x1 + 10;
+    R1 = 1;
+    BBOB = BOB_DISPARANDO;
+    U1 = 1;
+    XBO = x2;
+    YBO = y2;
+  }
+  if (Estado10 == 1 && PBOB == 1 && BURBUJA_BOB == LOW && DERECHA_BOB == LOW && IZQUIERDA_BOB == LOW && SALTANDO_BOB == LOW &&  BAJANDO_BOB == LOW)  { //cuando el pulsador se suelta se
+    Estado10 = 0;
+    //x1 = x1 + 10;
+    R1 = 1;
+    BBOB = BOB_DISPARANDO;
+    U1 = 2;
+    XBO = x2;
+    YBO = y2;
+  }
+  if (DERECHA_BOB == HIGH && IZQUIERDA_BOB == LOW && x2 < 278) {
+    Estado6 = 1;
+  }
+  if (Estado6 == 1  &&  DERECHA_BOB == LOW && IZQUIERDA_BOB == LOW && SALTANDO_BOB == LOW &&  BAJANDO_BOB == LOW)  { //cuando el pulsador se suelta se
+    Estado6 = 0;
+    x2 = x2 + 10;
+    R1 = 4;
+    BBOB = BOB;
+    FillRect(x2 - 10, y2, 10, 18, 0x0000);
+    PBOB = 0;
+  }
+
+  if (IZQUIERDA_BOB == HIGH &&  DERECHA_BOB == LOW && x2 > 18 ) {
+    Estado7 = 1;
+  }
+  if (Estado7 == 1 && IZQUIERDA_BOB == LOW &&  DERECHA_BOB == LOW && SALTANDO_BOB == LOW &&  BAJANDO_BOB == LOW) { //cuando el pulsador se suelta se
+    Estado7 = 0;
+    x2 = x2 - 10;
+    R1 = 4;
+    BBOB = BOB;
+    FillRect(x2 + 10, y2, 18, 18, 0x0000);
+    PBOB = 1;
+  }
+  if (SALTANDO_BOB == HIGH && BAJANDO_BOB == LOW && y2 > 40) {
+    Estado8 = 1;
+  }
+  if (Estado8 == 1 &&  SALTANDO_BOB == LOW &&  BAJANDO_BOB == LOW &&  DERECHA_BOB == LOW && IZQUIERDA_BOB == LOW)  { //cuando el pulsador se suelta se
+    Estado8 = 0;
+    y2 = y2 - 30 ;
+    R1 = 2;
+    BBOB = BOB_SALTANDO;
+    FillRect(x2 - 10, y2 + 30, 26, 18, 0x0000);
+  }
+  if (BAJANDO_BOB == HIGH && SALTANDO_BOB == LOW && y2 < 190) {
+    Estado9 = 1;
+  }
+  if (Estado9 == 1 &&  SALTANDO_BOB == LOW &&  BAJANDO_BOB == LOW &&  DERECHA_BOB == LOW && IZQUIERDA_BOB == LOW)  { //cuando el pulsador se suelta se
+    Estado9 = 0;
+    y2= y2 + 30 ;
+    R1= 2;
+    BBOB = BOB_BAJANDO;
+    FillRect(x2 - 10, y2 - 30, 26, 18, 0x0000);
+  }
+  if (( (((x2 < (x10 - 10)) || ((x2 > 118) && (x2 < (x11 - 10))) || (x2 > 248)) && (y2 == 160)) ||  (((x2 < (x10 - 10)) || ((x2 > 118) && (x2 < (x11 - 10))) || (x2 > 248)) && (y2 == 100)) || (((x2 < (x10 - 10)) || ((x2 > 118) && (x2 < (x11 - 10))) || (x2 > 248)) && (y2 == 40)) ||  (((x2 < (x12 - 10)) || (x2 > 183)) && (y2 == 130)) || (((x2 < (x12 - 10)) || (x2 > 183)) && (y2 == 70)) ) && (y2 < 190)  )  { //cuando el pensonaje no este sobre ninguna base
+    y2 = y2 + 30 ;
+    R1 = 2;
+    BBOB = BOB_BAJANDO;
+    FillRect(x2 - 10, y2 - 30, 26, 18, 0x0000);
+  }
+  //*********************************
+  int anim8 = (x2 / 11) % 2;
+  LCD_Sprite(x2, y2, 18, 18, BBOB, R1, anim8, PBOB, 0);
+  //**********************************
+  if (U1 == 1) {
+    if (XBO != 260 && XBO < 270) {
+      XBO++;
+      int anim8 = (XBO - 16 / 11) % 2;
+      LCD_Sprite(XBO + 18, YBO, 18, 18, BOB_BURBUJA, 1, anim8, PBOB, 0);
+      V_line( (XBO + 18) - 1, YBO, 18, 0x0000);
+    }
+  }
+  if (U1 == 0) {
+    FillRect(XBO + 18, YBO, 18, 18, 0x0000);
+  }
+  if (U1 == 2) {
+    if (XBO != 33 && XBO > 18) {
+      XBO--;
+      int anim8 = (XBO - 16 / 11) % 2;
+      LCD_Sprite(XBO - 18, YBO, 18, 18, BOB_BURBUJA, 1, anim8, PBOB, 0);
+      V_line( (XBO-18) + 18, YBO, 18, 0x0000);
+    }
+  }
+  if (U1 == 3)  {
+    FillRect(XBO - 18, YBO, 18, 18, 0x0000);
   }
   //******************************************************************************************************************************************
   // BENZON (VILLANOS)
@@ -398,31 +643,31 @@ void JUEGO(void) {
   //****************************************************************************************
   if (x30 == 115 ) {
     x40 = 115;
-    x30 = 0;
+    x30 = 330;
     A30 = 1;
   }
   if (x31 == 245 ) {
     x41 = 245;
-    x31 = 0;
+    x31 = 330;
     A31 = 1;
   }
   if (x32 == 245 ) {
     x42 = 245;
-    x32 = 0;
+    x32 = 330;
     A32 = 1;
   }
   //**********************************************************************************************
   if (x40 == 50 ) {
     x30 = 50;
-    x40 = 0;
+    x40 = 330;
   }
   if (x41 == 180 ) {
     x31 = 180;
-    x41 = 0;
+    x41 = 330;
   }
   if (x42 == 180 ) {
     x32 = 180;
-    x42 = 0;
+    x42 = 330;
   }
   //******************************************* DERECHA ********************************************
   if (x30 != 115 && A30 == 0 && PB1 == 0) {
@@ -545,22 +790,82 @@ void JUEGO(void) {
     XBEN2 = 18;
     YBU = 220;
   }
+   // ***************************************** BOB ********************************************************
+  //**************************************************************
+  if ((XBO + 36 == x30 || XBO + 36 == x40) && YBO == y30 ) {
+    BBENZO = BENZO_BURBUJA;
+    RBEN = 1;
+    XBEN = 18;
+    U1 = 0;
+  }
+  if ((XBO + 36 == x31 || XBO + 36 == x41) && YBO == y31 ) {
+    BBENZO1 = BENZO_BURBUJA;
+    RBEN1 = 1;
+    XBEN1 = 18;
+    U1 = 0;
+  }
+  if ((XBO + 36 == x32 || XBO + 36 == x42) && YBO == y32) {
+    BBENZO2 = BENZO_BURBUJA;
+    RBEN2 = 1;
+    XBEN2 = 18;
+    U1 = 0;
+  }
+  //********************************************************************
+  if ((x2 + 18 == x30 || x2 + 18 == x40) && BBENZO == BENZO_BURBUJA ) {
+    BBENZO = PUNTAJE;
+    PUNTAJE2 = PUNTAJE2 + 100;
+    RBEN = 1;
+    XBEN = 18;
+    YBO = 220;
+  }
+  if ((x2 + 18 == x31 || x2 + 18 == x41) && BBENZO1 == BENZO_BURBUJA ) {
+    BBENZO1 = PUNTAJE;
+    PUNTAJE2 = PUNTAJE2 + 100;
+    RBEN1 = 1;
+    XBEN1 = 18;
+    YBO = 220;
+  }
+  if ((x2 + 18 == x32 || x2 + 18 == x42) && BBENZO2 == BENZO_BURBUJA ) {
+    BBENZO2 = PUNTAJE;
+    PUNTAJE2 = PUNTAJE2 + 100;
+    RBEN2 = 1;
+    XBEN2 = 18;
+    YBO = 220;
+  }
   //******************* FRUTAS *********************************************
+  //*********************** BUB *****************************
   if ( (x1 + 18 == x20 || x1 == x20 + 13 ) && y == y20) {
     BMANZANA = PUNTAJE;
-    PUNTAJE1 = PUNTAJE1 + 100;
+    PUNTAJE1 = PUNTAJE1 + 50;
   }
   if (( x1 + 18 == x21 || x1 == x21 + 13) && y == y21 ) {
     BCHERRY = PUNTAJE;
-    PUNTAJE1 = PUNTAJE1 + 100;
+    PUNTAJE1 = PUNTAJE1 + 50;
   }
   if ( (x1 + 18 == x22 || x1 == x22 + 13) && y == y22 ) {
     BPINA = PUNTAJE;
-    PUNTAJE1 = PUNTAJE1 + 100;
+    PUNTAJE1 = PUNTAJE1 + 50;
   }
   if ( (x1 + 18 == x23 || x1 == x23 + 13) && y == y23 ) {
     BPERA = PUNTAJE;
-    PUNTAJE1 = PUNTAJE1 + 100;
+    PUNTAJE1 = PUNTAJE1 + 50;
+  }
+  //*********************** BOB *****************************
+  if ( (x2 + 18 == x20 || x2 == x20 + 13 ) && y2== y20) {
+    BMANZANA = PUNTAJE;
+    PUNTAJE2 = PUNTAJE2 + 50;
+  }
+  if (( x2 + 18 == x21 || x2 == x21 + 13) && y2 == y21 ) {
+    BCHERRY = PUNTAJE;
+    PUNTAJE2 = PUNTAJE2 + 50;
+  }
+  if ( (x2 + 18 == x22 || x2 == x22 + 13) && y2 == y22 ) {
+    BPINA = PUNTAJE;
+    PUNTAJE2 = PUNTAJE2 + 50;
+  }
+  if ( (x2 + 18 == x23 || x2 == x23 + 13) && y2 == y23 ) {
+    BPERA = PUNTAJE;
+    PUNTAJE2 = PUNTAJE2 + 50;
   }
 }
 
