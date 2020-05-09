@@ -94,6 +94,7 @@ int BURBUJA_BOB = 0;
 // DEFINIENDO POSICIONES
 //***************************************************************************************************************************************
 //****************************** BUB***********************************
+int MBUB = 0;
 int PUNTAJE1 = 0;
 int PBUB = 0;
 int R = 4;
@@ -103,6 +104,7 @@ int U = 0;
 int XBU = 1;
 int YBU = 0;
 //****************************** BOB***********************************
+int MBOB = 0;
 int PUNTAJE2 = 0;
 int x2 = 200;
 int R1 = 4;
@@ -167,6 +169,7 @@ String text1 = "P1";
 String text2 = "P2";
 String text10 = "BUB WIN";
 String text20 = "BOB WIN";
+String text21 = "LOSERS";
 String GO = "";
 //***************************************************************************************************************************************
 // ESTADOS
@@ -303,19 +306,16 @@ void setup() {
   //    ; // wait for serial port to connect. Needed for Leonardo only
   //  }
   SPI.setModule(0);
-
   Serial.print("Initializing SD card...");
   // On the Ethernet Shield, CS is pin 4. It's set as an output by default.
   // Note that even if it's not used as the CS pin, the hardware SS pin
   // (10 on most Arduino boards, 53 on the Mega) must be left as an output
   // or the SD library functions will not work.
   // pinMode(10, OUTPUT);
-
   if (!SD.begin(4)) {
     Serial.println("initialization failed!");
     return;
   }
-  Serial.println("initialization done.");
 
   //FillRect(0, 0, 319, 206, 0x421b);
   //LCD_Sprite(int x, int y, int width, int height, unsigned char bitmap[],int columns, int index, char flip, char offset);
@@ -350,7 +350,7 @@ void loop() {
           myFile.close();
           LCD_Clear(0x00);
           LCD_Bitmap(55 , 30, 210, 170, GL);
-          delay(1000);
+          delay(4000);
           LCD_Clear(0x00);
 
           break;
@@ -381,17 +381,28 @@ void loop() {
             }
             //******************************************************
             JUEGO();
-          } while ((G1 < 7));
+          } while (((G1 < 7) && MBUB == 0 && MBOB == 0));
           break;
         case 2:
+          buttonState = digitalRead(buttonPin);
           do {
-            if (PUNTAJE1 > PUNTAJE2) {
-              LCD_Print(text10, 160, 110, 200, 0xbfc3, 0x0000);
+            if ((PUNTAJE1 > PUNTAJE2) && MBUB == 0   ) {
+              LCD_Print(text10, 160, 110, 2, 0xbfc3, 0x0000);
             }
-            else {
-              LCD_Print(text20, 160, 110, 200, 0x4e7b, 0x0000);
+            if ((PUNTAJE1 > PUNTAJE2) && MBUB == 1   ) {
+              LCD_Print(text20, 160, 110, 2, 0x4e7b, 0x0000);
             }
-          } while ((buttonState == LOW));
+            if ((PUNTAJE1 < PUNTAJE2) && MBOB == 0 ) {
+              LCD_Print(text20, 160, 110, 2, 0x4e7b, 0x0000);
+            }
+            if ((PUNTAJE1 < PUNTAJE2) && MBOB == 1 ) {
+              LCD_Print(text10, 160, 110, 2, 0xbfc3, 0x0000);
+            }
+            if ((PUNTAJE1 == PUNTAJE2) && (MBOB == 1 || MBUB == 1)) {
+              LCD_Print(text21, 160, 110, 2, 0xffff, 0x0000);
+            }
+
+          } while ((buttonState != HIGH));
           break;
       }
     }
@@ -757,6 +768,8 @@ void JUEGO(void) {
     LCD_Sprite(x42, y32, XBEN2, 18, BBENZO2, RBEN2, anim2, 1, 0);
     V_line( x42 + 15, y32, 18, 0x0000);
   }
+
+
   //******************************************************************************************************************************************
   //  PUNTAJES
   //******************************************************************************************************************************************
@@ -1051,6 +1064,59 @@ void JUEGO(void) {
   if ( ( (x2 + 18)  >= x23 ) && x2 < 245  && y2 == y23 && PBOB == 0) {
     BPERA = PUNTAJE;
     PUNTAJE2 = PUNTAJE2 + 50;
+  }
+  //******************************************************************************************************************************************
+  //  MUERTES
+  //******************************************************************************************************************************************
+  //********************  BUB  ************************************************
+  if (   (   (((x1) <= (x40 + 15)) && A30 == 1 && x30 == 330) ||   (((x1) <= (x30 + 15)) && A30 == 0 && x40 == 330)   ) && y == y30 && PBUB == 1 &&  BBENZO == BENZO )  {
+    FillRect(x1, y, 18, 18, 0x0000);
+    MBUB = 1;
+  }
+  if ( (   (((x1) <= (x41 + 15)) && A31 == 1 && x31 == 330) ||   (((x1) <= (x31 + 15)) && A31 == 0 && x41 == 330)   ) && y == y31 && PBUB == 1 &&  BBENZO1 == BENZO ) {
+    FillRect(x1, y, 18, 18, 0x0000);
+    MBUB = 1;
+  }
+  if ( (   (((x1 + 18) >= (x42)) && A32 == 1 && x32 == 330) ) && y == y32 && PBUB == 1  &&  BBENZO2 == BENZO) {
+    FillRect(x1, y, 18, 18, 0x0000);
+    MBUB = 1;
+  }
+  if ( (   ( ( (x1 + 18) >= (x40)) && A30 == 1 && x30 == 330) ) && y == y30 && PBUB == 0 &&  BBENZO == BENZO )  {
+    FillRect(x1, y, 18, 18, 0x0000);
+    MBUB = 1;
+  }
+  if ((   (((x1 + 18) >= (x41)) && A31 == 1 && x31 == 330) ||   (((x1 + 18) >= (x31)) && A31 == 0 && x41 == 330)   ) && y == y31 && PBUB == 0 &&  BBENZO1 == BENZO ) {
+    FillRect(x1, y, 18, 18, 0x0000);
+    MBUB = 1;
+  }
+  if ((   (((x1 + 18) >= (x42)) && A32 == 1 && x32 == 330) ||   (((x1 + 18) >= (x32)) && A32 == 0 && x42 == 330)   ) && y == y32 && PBUB == 0  &&  BBENZO2 == BENZO ) {
+    FillRect(x1, y, 18, 18, 0x0000);
+    MBUB = 1;
+  }
+  //********************  BOB  ************************************************
+  if (   (   (((x2) <= (x40 + 15)) && A30 == 1 && x30 == 330) ||   (((x2) <= (x30 + 15)) && A30 == 0 && x40 == 330)   ) && y2 == y30 && PBOB == 1 &&  BBENZO == BENZO )  {
+    FillRect(x2, y2, 18, 18, 0x0000);
+    MBOB = 1;
+  }
+  if ( (   (((x2) <= (x41 + 15)) && A31 == 1 && x31 == 330) ||   (((x2) <= (x31 + 15)) && A31 == 0 && x41 == 330)   ) && y2 == y31 && PBOB == 1 &&  BBENZO1 == BENZO ) {
+    FillRect(x2, y2, 18, 18, 0x0000);
+    MBOB = 1;
+  }
+  if ( (   (((x2 + 18) >= (x42)) && A32 == 1 && x32 == 330) ) && y2 == y32 && PBOB == 1 &&  BBENZO2 == BENZO ) {
+    FillRect(x2, y2, 18, 18, 0x0000);
+    MBOB = 1;
+  }
+  if ( (   ( ( (x2 + 18) >= (x40)) && A30 == 1 && x30 == 330) ) && y2 == y30 && PBOB == 0 &&  BBENZO == BENZO )  {
+    FillRect(x2, y2, 18, 18, 0x0000);
+    MBOB = 1;
+  }
+  if ((   (((x2 + 18) >= (x41)) && A31 == 1 && x31 == 330) ||   (((x2 + 18) >= (x31)) && A31 == 0 && x41 == 330)   ) && y2 == y31 && PBOB == 0  &&  BBENZO1 == BENZO ) {
+    FillRect(x2, y2, 18, 18, 0x0000);
+    MBOB = 1;
+  }
+  if ((   (((x2 + 18) >= (x42)) && A32 == 1 && x32 == 330) ||   (((x2 + 18) >= (x32)) && A32 == 0 && x42 == 330)   ) && y2 == y32 && PBOB == 0 &&  BBENZO2  == BENZO   ) {
+    FillRect(x2, y2, 18, 18, 0x0000);
+    MBOB = 1;
   }
 }
 
