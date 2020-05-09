@@ -152,12 +152,6 @@ int y16 = 60;
 int y17 = 60;
 //****************************** FRUTAS ***********************************
 int G1 = 0;
-int G2 = 0;
-int G3 = 0;
-int G4 = 0;
-int G5 = 0;
-int G6 = 0;
-int G7 = 0;
 int y20 = 70;
 int y21 = 190;
 int y22 = 40;
@@ -339,7 +333,7 @@ void loop() {
   }
   if (c == 1) {
     unsigned char f = 0;
-    for (f = 0; f < 2; f++) {
+    for (f = 0; f < 3; f++) {
       switch (f) { // SEMAFORO
         case 0:
           myFile = SD.open("mario.txt");
@@ -387,14 +381,17 @@ void loop() {
             }
             //******************************************************
             JUEGO();
-
-          } while (G1 != 7);
-          if (PUNTAJE1 > PUNTAJE2) {
-            LCD_Print(text10, 160, 110, 200, 0xbfc3, 0x0000);
-          }
-          else {
-            LCD_Print(text20, 160, 110, 200, 0x4e7b, 0x0000);
-          }
+          } while ((G1 < 7));
+          break;
+        case 2:
+          do {
+            if (PUNTAJE1 > PUNTAJE2) {
+              LCD_Print(text10, 160, 110, 200, 0xbfc3, 0x0000);
+            }
+            else {
+              LCD_Print(text20, 160, 110, 200, 0x4e7b, 0x0000);
+            }
+          } while ((buttonState == LOW));
           break;
       }
     }
@@ -459,7 +456,6 @@ void JUEGO(void) {
   }
   if (Estado5 == 1 && PBUB == 0 && BURBUJA_BUB == LOW && DERECHA_BUB == LOW && IZQUIERDA_BUB == LOW && SALTANDO_BUB == LOW &&  BAJANDO_BUB == LOW)  { //cuando el pulsador se suelta se
     Estado5 = 0;
-    //x1 = x1 + 10;
     R = 1;
     BBUB = BUB_DISPARANDO;
     U = 1;
@@ -468,7 +464,6 @@ void JUEGO(void) {
   }
   if (Estado5 == 1 && PBUB == 1 && BURBUJA_BUB == LOW && DERECHA_BUB == LOW && IZQUIERDA_BUB == LOW && SALTANDO_BUB == LOW &&  BAJANDO_BUB == LOW)  { //cuando el pulsador se suelta se
     Estado5 = 0;
-    //x1 = x1 + 10;
     R = 1;
     BBUB = BUB_DISPARANDO;
     U = 2;
@@ -552,6 +547,7 @@ void JUEGO(void) {
   }
   if (U == 0) {
     FillRect(XBU + 18, YBU, 18, 18, 0x0000);
+    YBU =220;
   }
   if (U == 2) {
     if (XBU != 33 && XBU > 18) {
@@ -563,6 +559,7 @@ void JUEGO(void) {
   }
   if (U == 3)  {
     FillRect(XBU - 18, YBU, 18, 18, 0x0000);
+    YBU =220;
   }
   //**********************************************************  BOB  ********************************************************************************
   //**************************************************************************************************************************************************
@@ -573,7 +570,6 @@ void JUEGO(void) {
   }
   if (Estado10 == 1 && PBOB == 0 && BURBUJA_BOB == LOW && DERECHA_BOB == LOW && IZQUIERDA_BOB == LOW && SALTANDO_BOB == LOW &&  BAJANDO_BOB == LOW)  { //cuando el pulsador se suelta se
     Estado10 = 0;
-    //x1 = x1 + 10;
     R1 = 1;
     BBOB = BOB_DISPARANDO;
     U1 = 1;
@@ -582,7 +578,6 @@ void JUEGO(void) {
   }
   if (Estado10 == 1 && PBOB == 1 && BURBUJA_BOB == LOW && DERECHA_BOB == LOW && IZQUIERDA_BOB == LOW && SALTANDO_BOB == LOW &&  BAJANDO_BOB == LOW)  { //cuando el pulsador se suelta se
     Estado10 = 0;
-    //x1 = x1 + 10;
     R1 = 1;
     BBOB = BOB_DISPARANDO;
     U1 = 2;
@@ -683,12 +678,15 @@ void JUEGO(void) {
   //******************************************************************************************************************************************
   if (x30 == 50 ) {
     A30 = 0;
+    x40 = 330;
   }
   if (x31 == 180 ) {
     A31 = 0;
+    x41 = 330;
   }
   if (x32 == 180 ) {
     A32 = 0;
+    x42 = 330;
   }
   //****************************************************************************************
   if (x30 == 115 ) {
@@ -765,6 +763,7 @@ void JUEGO(void) {
     FillRect(x40, y30, XBEN, 18, 0x0000);
     FillRect(x30, y30, XBEN, 18, 0x0000);
     PB1 = 1;
+    BBENZO = BENZO;
   }
   if (BBENZO1 == PUNTAJE) {
     G1 = G1 + 1;
@@ -772,6 +771,7 @@ void JUEGO(void) {
     FillRect(x41, y31, XBEN1, 18, 0x0000);
     FillRect(x31, y31, XBEN1, 18, 0x0000);
     PB2 = 1;
+    BBENZO1 = BENZO;
   }
   if (BBENZO2 == PUNTAJE) {
     y32 = 220;
@@ -779,6 +779,7 @@ void JUEGO(void) {
     FillRect(x42, y32, XBEN2, 18, 0x0000);
     FillRect(x32, y32, XBEN2, 18, 0x0000);
     PB3 = 1;
+    BBENZO2 = BENZO;
   }
   //**************************************************************
   if (BMANZANA == PUNTAJE) {
@@ -786,39 +787,61 @@ void JUEGO(void) {
     FillRect(x20, y20, 13, 17, 0x0000);
     y20 = 220;
     x20 = 330;
+    BMANZANA = MANZANA;
   }
   if (BCHERRY == PUNTAJE) {
     G1 = G1 + 1;
     FillRect(x21, y21, 13, 17, 0x0000);
     y21 = 220;
     x21 = 330;
+    BCHERRY = CHERRY;
   }
   if (BPINA == PUNTAJE) {
     G1 = G1 + 1;
     FillRect(x22, y22, 13, 17, 0x0000);
     y22 = 220;
     x22 = 330;
+    BPINA = PINA;
   }
   if (BPERA == PUNTAJE) {
     G1 = G1 + 1;
     FillRect(x23, y23, 13, 17, 0x0000);
     y23 = 220;
     x23 = 330;
+    BPERA = PERA;
   }
-  //**************************************************************
-  if ((XBU + 36 == x30 || XBU + 36 == x40) && YBU == y30 ) {
+  //********************************** BUB ****************************
+  if (   (   (((XBU-18) <= (x40+15)) && A30==1 && x30==330) ||   (((XBU-18) <= (x30+15)) && A30==0 && x40==330)   )&& YBU==y30 && PBUB==1  )  {
+    BBENZO = BENZO_BURBUJA;
+    RBEN = 1;
+    XBEN = 18;
+    U = 3;
+  }
+  if ( (   (((XBU-18) <= (x41+15)) && A31==1 && x31==330) ||   (((XBU-18) <= (x31+15)) && A31==0 && x41==330)   )&& YBU==y31 && PBUB==1  ) {
+    BBENZO1 = BENZO_BURBUJA;
+    RBEN1 = 1;
+    XBEN1 = 18;
+    U = 3;
+  }
+  if ( (   (((XBU-18) <= (x42+15)) && A32==1 && x32==330) ||   (((XBU-18) <= (x32+15)) && A32==0 && x42==330)   )&& YBU==y32 && PBUB==1  ) {
+    BBENZO2 = BENZO_BURBUJA;
+    RBEN2 = 1;
+    XBEN2 = 18;
+    U = 3;
+  }
+    if ( (   (((XBU+36) >= (x40)) && A30==1 && x30==330) ||   (((XBU+36) >= (x30)) && A30==0 && x40==330)   )&& YBU==y30 && PBUB==0  )  {
     BBENZO = BENZO_BURBUJA;
     RBEN = 1;
     XBEN = 18;
     U = 0;
   }
-  if ((XBU + 36 == x31 || XBU + 36 == x41) && YBU == y31 ) {
+  if ((   (((XBU+36) >= (x41)) && A31==1 && x31==330) ||   (((XBU+36) >= (x31)) && A31==0 && x41==330)   )&& YBU==y31 && PBUB==0  ) {
     BBENZO1 = BENZO_BURBUJA;
     RBEN1 = 1;
     XBEN1 = 18;
     U = 0;
   }
-  if ((XBU + 36 == x32 || XBU + 36 == x42) && YBU == y32) {
+  if ((   (((XBU+36) >= (x42)) && A32==1 && x32==330) ||   (((XBU+36) >= (x32)) && A32==0 && x42==330)   )&& YBU==y32 && PBUB==0   ) {
     BBENZO2 = BENZO_BURBUJA;
     RBEN2 = 1;
     XBEN2 = 18;
