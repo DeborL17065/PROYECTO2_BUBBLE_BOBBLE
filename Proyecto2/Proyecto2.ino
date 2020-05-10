@@ -462,87 +462,87 @@ void JUEGO(void) {
   //**************************************************************************************************************************************************
   //BURBUJA
   //**************************************************************************************************************************************************
-  if (BURBUJA_BUB == HIGH ) {
+  if (BURBUJA_BUB == HIGH ) {  // ANTIREBOTE
     Estado5 = 1;
   }
-  if (Estado5 == 1 && PBUB == 0 && BURBUJA_BUB == LOW && DERECHA_BUB == LOW && IZQUIERDA_BUB == LOW && SALTANDO_BUB == LOW &&  BAJANDO_BUB == LOW)  { //cuando el pulsador se suelta se
+  if (Estado5 == 1 && PBUB == 0 && BURBUJA_BUB == LOW && DERECHA_BUB == LOW && IZQUIERDA_BUB == LOW && SALTANDO_BUB == LOW &&  BAJANDO_BUB == LOW)  { // ANTIREBOTE
     Estado5 = 0;
-    R = 1;
-    BBUB = BUB_DISPARANDO;
-    U = 1;
-    XBU = x1;
-    YBU = y;
+    R = 1;                                         // EL SPRITE AHORA SOLO TENDRA 4 COLUMNAS
+    BBUB = BUB_DISPARANDO;                         // EL BITMAP DEL SPRITE AHORA MUESTRA AL PERSONAJE DISPARANDO
+    U = 1;                                         // SE INICIAL EL SPRITE PARA QUE LA BURBUJA SE MUEVA A LA DERECHA
+    XBU = x1;                                      // X DE LA BURBUJA AHORA ES IGUAL AL DEL PERSONAJE
+    YBU = y;                                       // Y DE LA BURBUJA AHORA ES IGUAL AL DEL PERSONAJE
   }
-  if (Estado5 == 1 && PBUB == 1 && BURBUJA_BUB == LOW && DERECHA_BUB == LOW && IZQUIERDA_BUB == LOW && SALTANDO_BUB == LOW &&  BAJANDO_BUB == LOW)  { //cuando el pulsador se suelta se
+  if (Estado5 == 1 && PBUB == 1 && BURBUJA_BUB == LOW && DERECHA_BUB == LOW && IZQUIERDA_BUB == LOW && SALTANDO_BUB == LOW &&  BAJANDO_BUB == LOW)  {// ANTIREBOTE
     Estado5 = 0;
-    R = 1;
-    BBUB = BUB_DISPARANDO;
-    U = 2;
-    XBU = x1;
-    YBU = y;
+    R = 1;                                       // EL SPRITE AHORA SOLO TENDRA 4 COLUMNAS
+    BBUB = BUB_DISPARANDO;                       // EL BITMAP DEL SPRITE AHORA MUESTRA AL PERSONAJE DISPARANDO
+    U = 2;                                       // SE INICIAL EL SPRITE PARA QUE LA BURBUJA SE MUEVA A LA IZQUIERDA
+    XBU = x1;                                    // X DE LA BURBUJA AHORA ES IGUAL AL DEL PERSONAJE
+    YBU = y;                                     // Y DE LA BURBUJA AHORA ES IGUAL AL DEL PERSONAJE
   }
   //**************************************************************************************************************************************************
   //DERECHA
   //**************************************************************************************************************************************************
-  if (DERECHA_BUB == HIGH && IZQUIERDA_BUB == LOW && x1 < 278) {
+  if (DERECHA_BUB == HIGH && IZQUIERDA_BUB == LOW && x1 < 278) {  // ANTIREBOTE
     Estado1 = 1;
   }
-  if (Estado1 == 1  &&  DERECHA_BUB == LOW && IZQUIERDA_BUB == LOW && SALTANDO_BUB == LOW &&  BAJANDO_BUB == LOW)  { //cuando el pulsador se suelta se
+  if (Estado1 == 1  &&  DERECHA_BUB == LOW && IZQUIERDA_BUB == LOW && SALTANDO_BUB == LOW &&  BAJANDO_BUB == LOW)  { // ANTIREBOTE
     Estado1 = 0;
-    x1 = x1 + 10;
-    R = 4;
-    BBUB = BUB;
-    FillRect(x1 - 10, y, 10, 18, 0x0000);
-    PBUB = 0;
+    x1 = x1 + 10;                               // AUMENTA EN 10 PARA MOVILIZARSE A LA DERECHA 
+    R = 4;                                      // EL SPRITE AHORA SOLO TENDRA 4 COLUMNAS
+    BBUB = BUB;                                 // EL BITMAP DEL SPRITE AHORA MUESTRA AL PERSONAJE EN SU ESTADO NORMAL
+    FillRect(x1 - 10, y, 10, 18, 0x0000);       // DIBUJA UN RECTANGULO 10 POSICIONES ANTES DE LA CORDENADA X DEL PERSONAJE
+    PBUB = 0;                                  // EL FLIP DEL SPRITE AHORA ESTA HACIA LA DERECHA
   }
   //**************************************************************************************************************************************************
   //IZQUIERDA
   //**************************************************************************************************************************************************
-  if (IZQUIERDA_BUB == HIGH &&  DERECHA_BUB == LOW && x1 > 18 ) {
+  if (IZQUIERDA_BUB == HIGH &&  DERECHA_BUB == LOW && x1 > 18 ) {  // ANTIREBOTE
     Estado2 = 1;
   }
-  if (Estado2 == 1 && IZQUIERDA_BUB == LOW &&  DERECHA_BUB == LOW && SALTANDO_BUB == LOW &&  BAJANDO_BUB == LOW) { //cuando el pulsador se suelta se
+  if (Estado2 == 1 && IZQUIERDA_BUB == LOW &&  DERECHA_BUB == LOW && SALTANDO_BUB == LOW &&  BAJANDO_BUB == LOW) { // ANTIREBOTE
     Estado2 = 0;
-    x1 = x1 - 10;
-    R = 4;
-    BBUB = BUB;
-    FillRect(x1 + 10, y, 18, 18, 0x0000);
-    PBUB = 1;
+    x1 = x1 - 10;                              // DISMINUYE EN 10 PARA MOVILIZARSE A LA IZQUIERDA 
+    R = 4;                                     // EL SPRITE AHORA SOLO TENDRA 4 COLUMNAS
+    BBUB = BUB;                                // EL BITMAP DEL SPRITE AHORA MUESTRA AL PERSONAJE EN SU ESTADO NORMAL
+    FillRect(x1 + 10, y, 18, 18, 0x0000);      // DIBUJA UN RECTANGULO 10 POSICIONES DESPUES DE LA CORDENADA X DEL PERSONAJE
+    PBUB = 1;                                  // EL FLIP DEL SPRITE AHORA ESTA HACIA LA IZQUIERDA
   }
   //**************************************************************************************************************************************************
   //SALTANDO
   //**************************************************************************************************************************************************
-  if (SALTANDO_BUB == HIGH && BAJANDO_BUB == LOW && y > 40) {
+  if (SALTANDO_BUB == HIGH && BAJANDO_BUB == LOW && y > 40) {   // ANTIREBOTE
     Estado3 = 1;
   }
-  if (Estado3 == 1 &&  SALTANDO_BUB == LOW &&  BAJANDO_BUB == LOW &&  DERECHA_BUB == LOW && IZQUIERDA_BUB == LOW)  { //cuando el pulsador se suelta se
-    Estado3 = 0;
-    y = y - 30 ;
-    R = 2;
-    BBUB = BUB_SALTANDO;
-    FillRect(x1 - 10, y + 30, 26, 18, 0x0000);
+  if (Estado3 == 1 &&  SALTANDO_BUB == LOW &&  BAJANDO_BUB == LOW &&  DERECHA_BUB == LOW && IZQUIERDA_BUB == LOW)  { // ANTIREBOTE
+    Estado3 = 0;        
+    y = y - 30 ;                                   // DISMINUYE EN 30 PARA SALTAR A LA SIGUIENTE PLATAFORMA  
+    R = 2;                                         // EL SPRITE AHORA SOLO TENDRA 2 COLUMNAS
+    BBUB = BUB_SALTANDO;                           // EL BITMAP DEL SPRITE AHORA MUESTRA AL PERSONAJE SALTANDO
+    FillRect(x1 - 10, y + 30, 26, 18, 0x0000);     // DIBUJA UN RECATANGULO EN LA POSICION ANTERIOR
   }
   //**************************************************************************************************************************************************
   //BAJANDO
   //**************************************************************************************************************************************************
-  if (BAJANDO_BUB == HIGH && SALTANDO_BUB == LOW && y < 190) {
+  if (BAJANDO_BUB == HIGH && SALTANDO_BUB == LOW && y < 190) {    // ANTIREBOTE
     Estado4 = 1;
   }
-  if (Estado4 == 1 &&  SALTANDO_BUB == LOW &&  BAJANDO_BUB == LOW &&  DERECHA_BUB == LOW && IZQUIERDA_BUB == LOW)  { //cuando el pulsador se suelta se
+  if (Estado4 == 1 &&  SALTANDO_BUB == LOW &&  BAJANDO_BUB == LOW &&  DERECHA_BUB == LOW && IZQUIERDA_BUB == LOW)  { // ANTIREBOTE
     Estado4 = 0;
-    y = y + 30 ;
-    R = 2;
-    BBUB = BUB_BAJANDO;
-    FillRect(x1 - 10, y - 30, 26, 18, 0x0000);
+    y = y + 30 ;                                   // INCREMENTA EN 30 PARA BAJAR A LA SIGUIENTE PLATAFORMA
+    R = 2;                                         // EL SPRITE AHORA SOLO TENDRA 2 COLUMNAS
+    BBUB = BUB_BAJANDO;                            // EL BITMAP DEL SPRITE AHORA MUESTRA AL PERSONAJE BAJANDO
+    FillRect(x1 - 10, y - 30, 26, 18, 0x0000);     // DIBUJA UN RECATANGULO EN LA POSICION ANTERIOR
   }
   //**************************************************************************************************************************************************
   //GRAVEDAD
   //**************************************************************************************************************************************************
   if (( (((x1 < (x10 - 10)) || ((x1 > 118) && (x1 < (x11 - 10))) || (x1 > 248)) && (y == 160)) ||  (((x1 < (x10 - 10)) || ((x1 > 118) && (x1 < (x11 - 10))) || (x1 > 248)) && (y == 100)) || (((x1 < (x10 - 10)) || ((x1 > 118) && (x1 < (x11 - 10))) || (x1 > 248)) && (y == 40)) ||  (((x1 < (x12 - 10)) || (x1 > 183)) && (y == 130)) || (((x1 < (x12 - 10)) || (x1 > 183)) && (y == 70)) ) && (y < 190)  )  { //cuando el pensonaje no este sobre ninguna base
-    y = y + 30 ;
-    R = 2;
-    BBUB = BUB_BAJANDO;
-    FillRect(x1 - 10, y - 30, 26, 18, 0x0000);
+    y = y + 30 ;                                    // INCREMENTA EN 30 PARA BAJAR A LA SIGUIENTE PLATAFORMA
+    R = 2;                                          // EL BITMAP DEL SPRITE AHORA MUESTRA AL PERSONAJE BAJANDO
+    BBUB = BUB_BAJANDO;                             // EL BITMAP DEL SPRITE AHORA MUESTRA AL PERSONAJE BAJANDO
+    FillRect(x1 - 10, y - 30, 26, 18, 0x0000);      // DIBUJA UN RECATANGULO EN LA POSICION ANTERIOR
   }
   //*********************************
   int anim3 = (x1 / 11) % 2;
@@ -687,7 +687,7 @@ void JUEGO(void) {
     YBO = 220;
   }
   //******************************************************************************************************************************************
-  // BENZON (VILLANOS)
+  // BENZO (VILLANOS)
   //******************************************************************************************************************************************
   if (x30 == 50 ) {
     A30 = 0;
@@ -998,32 +998,32 @@ void JUEGO(void) {
   // FRUTAS
   //***************************************************************************************************************
   //*********************** BUB *****************************
-  if ( ( x1  <= (x20 + 18) )  && y == y20 && PBUB == 1) {
+  if ( ( x1  <= (x20 + 18) )  && y == y20 && PBUB == 1) { //IZQUIERDA
     BMANZANA = PUNTAJE;
     PUNTAJE1 = PUNTAJE1 + 50;
   }
-  if (( x1  <= (x21 + 18) ) && y == y21 && PBUB == 1 ) {
+  if (( x1  <= (x21 + 18) ) && y == y21 && PBUB == 1 ) { //IZQUIERDA
     BCHERRY = PUNTAJE;
     PUNTAJE1 = PUNTAJE1 + 50;
   }
-  if ( ( x1  <= (x22 + 18) ) && y == y22 && PBUB == 1 ) {
+  if ( ( x1  <= (x22 + 18) ) && y == y22 && PBUB == 1 ) { //IZQUIERDA
     BPINA = PUNTAJE;
     PUNTAJE1 = PUNTAJE1 + 50;
   }
-  if ( ( x1  <= (x23 + 18) ) && x1 > 190  && y == y23 && PBUB == 1) {
+  if ( ( x1  <= (x23 + 18) ) && x1 > 190  && y == y23 && PBUB == 1) { //IZQUIERDA
     BPERA = PUNTAJE;
     PUNTAJE1 = PUNTAJE1 + 50;
   }
   //******************
-  if ( ( (x1 + 18)  >= x20 ) && x1 < 170 && y == y20 && PBUB == 0) {
+  if ( ( (x1 + 18)  >= x20 ) && x1 < 170 && y == y20 && PBUB == 0) { //DERECHA
     BMANZANA = PUNTAJE;
     PUNTAJE1 = PUNTAJE1 + 50;
   }
-  if (( (x1 + 18)  >= x21 ) &&  x1 < 180 && y == y21 && PBUB == 0 ) {
+  if (( (x1 + 18)  >= x21 ) &&  x1 < 180 && y == y21 && PBUB == 0 ) { //DERECHA
     BCHERRY = PUNTAJE;
     PUNTAJE1 = PUNTAJE1 + 50;
   }
-  if ( ( (x1 + 18)  >= x22 ) && x1 < 90  && y == y22 && PBUB == 0) {
+  if ( ( (x1 + 18)  >= x22 ) && x1 < 90  && y == y22 && PBUB == 0) { //DERECHA
     BPINA = PUNTAJE;
     PUNTAJE1 = PUNTAJE1 + 50;
   }
@@ -1069,27 +1069,27 @@ void JUEGO(void) {
   //  MUERTES
   //******************************************************************************************************************************************
   //********************  BUB  ************************************************
-  if (   (   (((x1) <= (x40 + 15)) && A30 == 1 && x30 == 330) ||   (((x1) <= (x30 + 15)) && A30 == 0 && x40 == 330)   ) && y == y30 && PBUB == 1 &&  BBENZO == BENZO )  {
+  if (   (   (((x1) <= (x40 + 15)) && A30 == 1 && x30 == 330) ||   (((x1) <= (x30 + 15)) && A30 == 0 && x40 == 330)   ) && y == y30 && PBUB == 1 &&  BBENZO == BENZO )  { //IZQUIERDA
     FillRect(x1, y, 18, 18, 0x0000);
     MBUB = 1;
   }
-  if ( (   (((x1) <= (x41 + 15)) && A31 == 1 && x31 == 330) ||   (((x1) <= (x31 + 15)) && A31 == 0 && x41 == 330)   ) && y == y31 && PBUB == 1 &&  BBENZO1 == BENZO ) {
+  if ( (   (((x1) <= (x41 + 15)) && A31 == 1 && x31 == 330) ||   (((x1) <= (x31 + 15)) && A31 == 0 && x41 == 330)   ) && y == y31 && PBUB == 1 &&  BBENZO1 == BENZO ) {  //IZQUIERDA
     FillRect(x1, y, 18, 18, 0x0000);
     MBUB = 1;
   }
-  if ( (   (((x1 + 18) >= (x42)) && A32 == 1 && x32 == 330) ) && y == y32 && PBUB == 1  &&  BBENZO2 == BENZO) {
+  if ( (   (((x1 + 18) >= (x42)) && A32 == 1 && x32 == 330) ) && y == y32 && PBUB == 1  &&  BBENZO2 == BENZO) {  //IZQUIERDA
     FillRect(x1, y, 18, 18, 0x0000);
     MBUB = 1;
   }
-  if ( (   ( ( (x1 + 18) >= (x40)) && A30 == 1 && x30 == 330) ) && y == y30 && PBUB == 0 &&  BBENZO == BENZO )  {
+  if ( (   ( ( (x1 + 18) >= (x40)) && A30 == 1 && x30 == 330) ) && y == y30 && PBUB == 0 &&  BBENZO == BENZO )  { //DERECHA
     FillRect(x1, y, 18, 18, 0x0000);
     MBUB = 1;
   }
-  if ((   (((x1 + 18) >= (x41)) && A31 == 1 && x31 == 330) ||   (((x1 + 18) >= (x31)) && A31 == 0 && x41 == 330)   ) && y == y31 && PBUB == 0 &&  BBENZO1 == BENZO ) {
+  if ((   (((x1 + 18) >= (x41)) && A31 == 1 && x31 == 330) ||   (((x1 + 18) >= (x31)) && A31 == 0 && x41 == 330)   ) && y == y31 && PBUB == 0 &&  BBENZO1 == BENZO ) {//DERECHA
     FillRect(x1, y, 18, 18, 0x0000);
     MBUB = 1;
   }
-  if ((   (((x1 + 18) >= (x42)) && A32 == 1 && x32 == 330) ||   (((x1 + 18) >= (x32)) && A32 == 0 && x42 == 330)   ) && y == y32 && PBUB == 0  &&  BBENZO2 == BENZO ) {
+  if ((   (((x1 + 18) >= (x42)) && A32 == 1 && x32 == 330) ||   (((x1 + 18) >= (x32)) && A32 == 0 && x42 == 330)   ) && y == y32 && PBUB == 0  &&  BBENZO2 == BENZO ) {//DERECHA
     FillRect(x1, y, 18, 18, 0x0000);
     MBUB = 1;
   }
